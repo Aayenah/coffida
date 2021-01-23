@@ -10,21 +10,54 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from './screens/HomeScreen';
-import SearchScreen from './screens/SearchScreen';
-import FavouritesScreen from './screens/FavouritesScreen';
-import AccountScreen from './screens/AccountScreen';
+import { Icon } from 'react-native-elements';
+import HomeScreen from './src/screens/HomeScreen';
+import SearchScreen from './src/screens/SearchScreen';
+import FavouritesScreen from './src/screens/FavouritesScreen';
+import AccountScreen from './src/screens/AccountScreen';
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="HomeScreen" component={HomeScreen} />
-        <Tab.Screen name="SearchScreen" component={SearchScreen} />
-        <Tab.Screen name="FavouritesScreen" component={FavouritesScreen} />
-        <Tab.Screen name="AccountScreen" component={AccountScreen} />
+    <NavigationContainer style={styles.body}>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          // eslint-disable-next-line react/prop-types
+          tabBarIcon: ({ color }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = 'mug-hot';
+            } else if (route.name === 'Search') {
+              iconName = 'search';
+            } else if (route.name === 'Favourites') {
+              iconName = 'heart';
+            } else if (route.name === 'Account') {
+              iconName = 'user';
+            }
+
+            return (
+              <Icon
+                name={iconName}
+                type="font-awesome-5"
+                color={color}
+                size={20}
+                solid
+              />
+            );
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: '#2D080A',
+          inactiveTintColor: 'gray',
+          labelStyle: { fontSize: 11 },
+        }}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Search" component={SearchScreen} />
+        <Tab.Screen name="Favourites" component={FavouritesScreen} />
+        <Tab.Screen name="Account" component={AccountScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
