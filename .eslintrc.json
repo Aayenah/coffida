@@ -28,6 +28,7 @@
     "prettier/prettier": ["warn", {"bracketSpacing": true, "endOfLine": "auto", "jsxBracketSameLine": false}],
     "arrow-body-style": "off",
     "no-use-before-define": ["error", { "functions": true, "classes": true, "variables": false }],
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "object-curly-newline": "off"
   }
 }
