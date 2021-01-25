@@ -2,14 +2,25 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
+import colors from '../config/colors';
 
 export default function AverageStars({ avg, total }) {
-  const info = ` ${avg.toFixed(1)} (${total})`;
+  const average = avg < 1 ? ' -' : ` ${avg.toFixed(1)}`;
+  const count = ` (${total})`;
 
   return (
     <View style={styles.container}>
-      <Icon name="star" type="font-awesome-5" color="#6F2A3B" size={12} solid />
-      <Text style={styles.rating}>{info}</Text>
+      <Icon
+        name="star"
+        type="font-awesome-5"
+        color={colors.primary}
+        size={12}
+        solid
+      />
+      <View style={styles.row}>
+        <Text style={styles.rating}>{average}</Text>
+        <Text style={styles.total}>{count}</Text>
+      </View>
     </View>
   );
 }
@@ -30,5 +41,13 @@ const styles = StyleSheet.create({
   rating: {
     fontSize: 12,
     fontFamily: 'Roboto',
+    fontWeight: 'bold',
+  },
+  total: {
+    fontSize: 12,
+    fontFamily: 'Roboto',
+  },
+  row: {
+    flexDirection: 'row',
   },
 });
