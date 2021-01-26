@@ -10,6 +10,8 @@ target 'coffiDa' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-location', :path => '../node_modules/react-native-location'
+
   target 'coffiDaTests' do
     inherit! :complete
     # Pods for testing

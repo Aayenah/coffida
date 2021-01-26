@@ -14,7 +14,7 @@ export default function Distance({ miles }) {
         solid
         style={{ marginRight: 3 }}
       />
-      <Text style={styles.rating}>{miles.toFixed(1)}</Text>
+      <Text style={styles.value}>{miles.toFixed(1)}</Text>
     </View>
   );
 }
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // marginTop: 10,
   },
-  rating: {
+  value: {
     fontSize: 11,
     fontFamily: 'Roboto',
     color: '#424242',

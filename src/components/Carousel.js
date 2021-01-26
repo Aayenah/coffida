@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, View, StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import CafeCard from './CafeCard';
 
 export default function Carousel({ title, items }) {
+  useEffect(() => {
+    console.log(title);
+    if (title === 'Nearby Cafes') {
+      items.sort((a, b) => {
+        if (a.avg_overall_rating < b.avg_overall_rating) {
+          return -1;
+        }
+        if (a.avg_overall_rating > b.avg_overall_rating) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+  }, []);
+
   return (
     <View>
       <Text style={styles.title}>{title}</Text>
@@ -12,7 +27,9 @@ export default function Carousel({ title, items }) {
         renderItem={({ item }) => {
           return (
             <CafeCard
-              title={item.location_name}
+              key={item.location_id}
+              cafeId={item.location_id}
+              cafeName={item.location_name}
               photo="https://picsum.photos/2000/1000"
               avgOverallRating={item.avg_overall_rating}
               avgQualityRating={item.avg_overall_rating}
@@ -22,7 +39,7 @@ export default function Carousel({ title, items }) {
             />
           );
         }}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.location_id.toString()}
         horizontal
         style={{ marginBottom: 20, paddingBottom: 5 }}
       />
@@ -33,7 +50,6 @@ export default function Carousel({ title, items }) {
 Carousel.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   title: PropTypes.string.isRequired,
-  // Card: PropTypes.element.isRequired,
 };
 
 const styles = StyleSheet.create({
