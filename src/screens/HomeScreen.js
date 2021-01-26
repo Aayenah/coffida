@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Text } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { Image } from 'react-native-elements';
 import RNLocation from 'react-native-location';
+import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Carousel from '../components/Carousel';
 import colors from '../config/colors';
@@ -15,10 +16,13 @@ const permsOptions = {
   },
 };
 
+const Stack = createStackNavigator();
+
 export default function HomeScreen() {
   const [cafes, setCafes] = useState([]);
   const [currentCoord, setCurrentCoord] = useState(null);
   const [error, setError] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   function fetchCafes() {
     const options = {
@@ -73,7 +77,7 @@ export default function HomeScreen() {
         detail: 'fine',
       },
     }).then((granted) => {
-      // console.log(`granted: ${granted}`);
+      console.log(`granted: ${granted}`);
       if (granted) {
         startUpdatingLocation();
       } else {
@@ -96,8 +100,19 @@ export default function HomeScreen() {
     saveCoordinates();
   }, [currentCoord]);
 
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={styles.header}>
         <Image source={headerImg} style={styles.img} />
       </View>

@@ -15,12 +15,14 @@ import HomeScreen from './src/screens/HomeScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import FavouritesScreen from './src/screens/FavouritesScreen';
 import AccountScreen from './src/screens/AccountScreen';
+import HomeStack from './src/stacks/HomeStack';
+import { navigationRef } from './src/utility/RootNavigation';
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer style={styles.body}>
+    <NavigationContainer style={styles.body} ref={navigationRef}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           // eslint-disable-next-line react/prop-types
@@ -54,7 +56,7 @@ const App = () => {
           labelStyle: { fontSize: 11 },
         }}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Search" component={SearchScreen} />
         <Tab.Screen name="Favourites" component={FavouritesScreen} />
         <Tab.Screen name="Account" component={AccountScreen} />

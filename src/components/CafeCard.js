@@ -8,12 +8,14 @@ import {
 } from 'react-native';
 import { Card } from 'react-native-elements';
 import { getDistance, convertDistance } from 'geolib';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 import AverageStars from './AverageStars';
 import Distance from './Distance';
 import AspectRating from './AspectRating';
 import FavouritesButton from './FavouritesButton';
+import * as RootNavigation from '../utility/RootNavigation';
 
 const windowWidth = Dimensions.get('window').width;
 export default function CafeCard({
@@ -84,25 +86,34 @@ export default function CafeCard({
     distanceInMiles();
   }, [cafeCoord]);
 
+  function goToCafeScreen() {
+    RootNavigation.navigate('Cafe Screen', {
+      cafeId,
+      cafeName,
+    });
+  }
+
   return (
-    <Card containerStyle={styles.card}>
-      <ImageBackground source={{ uri: photo }} style={styles.img}>
-        <FavouritesButton />
-      </ImageBackground>
-      <View style={styles.body}>
-        <View style={styles.titleRow}>
-          <Text style={styles.cafeName}>{cafeName}</Text>
-          <Text style={styles.cafeName}>{cafeId}</Text>
-          {distance > 0 ? <Distance miles={distance} /> : <Text>-</Text>}
+    <TouchableWithoutFeedback onPress={goToCafeScreen}>
+      <Card containerStyle={styles.card}>
+        <ImageBackground source={{ uri: photo }} style={styles.img}>
+          <FavouritesButton />
+        </ImageBackground>
+        <View style={styles.body}>
+          <View style={styles.titleRow}>
+            <Text style={styles.cafeName}>{cafeName}</Text>
+            <Text style={styles.cafeName}>{cafeId}</Text>
+            {distance > 0 ? <Distance miles={distance} /> : <Text>-</Text>}
+          </View>
+          <AverageStars avg={avgOverallRating} total={totalReviews} />
+          <View style={styles.aspectRow}>
+            <AspectRating aspect="Quality" rating={avgQualityRating} />
+            <AspectRating aspect="Price" rating={avgPriceRating} />
+            <AspectRating aspect="Cleanliness" rating={avgCleanlinessRating} />
+          </View>
         </View>
-        <AverageStars avg={avgOverallRating} total={totalReviews} />
-        <View style={styles.aspectRow}>
-          <AspectRating aspect="Quality" rating={avgQualityRating} />
-          <AspectRating aspect="Price" rating={avgPriceRating} />
-          <AspectRating aspect="Cleanliness" rating={avgCleanlinessRating} />
-        </View>
-      </View>
-    </Card>
+      </Card>
+    </TouchableWithoutFeedback>
   );
 }
 
