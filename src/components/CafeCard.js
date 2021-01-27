@@ -38,7 +38,6 @@ export default function CafeCard({
       const currentLng = await AsyncStorage.getItem('@lng');
       if (currentLat !== null && currentLng !== null) {
         currentCoord = { latitude: currentLat, longitude: currentLng };
-        console.log(`${currentLat}, ${currentLng}`);
       }
     } catch (err) {
       console.log(`cannot retrieve coords ${err}`);
@@ -51,13 +50,11 @@ export default function CafeCard({
     let inMiles = 0;
     if (currentCoord && cafeCoord) {
       const distanceInMeters = getDistance(currentCoord, cafeCoord);
-      // const distanceInMeters = getDistance(currentCoord, cafeCoord);
       inMiles = convertDistance(distanceInMeters, 'mi');
       setDistance(inMiles);
     } else {
-      console.log('currentCoords null');
+      // console.log('currentCoords null');
     }
-    console.log(inMiles);
     return inMiles;
   }
 
@@ -69,7 +66,6 @@ export default function CafeCard({
           latitude: data.latitude.toString(),
           longitude: data.longitude.toString(),
         };
-        console.log(coord);
         setCafeCoord(coord);
       })
       .catch((err) => {

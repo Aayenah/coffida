@@ -1,0 +1,25 @@
+[X] Setup carousel with cafe cards
+[X] request list of cafes from endpoint /find
+[X] Setup bottom navigation
+[X] Setup Home stack navigation (cafe card -> cafe screen -> etc)
+[X] Filter cafe list by high overall rating
+[X] Filter cafe list by high quality rating
+[X] Filter cafe list by high price rating
+[ ] Favourite/Unfavourite cafe from carousel
+[ ] Favourite/Unfavourite cafe from cafe screen
+[ ] Filter cafe list by nearby cafes
+[ ] Setup geolocation
+  [X] Ask user for permissions
+  [ ] Define what to happen if permission denied
+  [X] Calculate distance from current location to cafe location
+  [X] Display distance in miles for each cafe card 
+  [X] Save current coords in storage
+[ ] Setup search screen
+  [ ] Search for cafes by name, ratings etc
+[ ] Setup favourites screen
+  [ ] Display favourite cafes
+[ ] Setup account screen
+  [ ] 
+
+  
+

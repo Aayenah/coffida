@@ -1,33 +1,45 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
 import { Image } from 'react-native-elements';
+import { getDistance, convertDistance } from 'geolib';
 import RNLocation from 'react-native-location';
-import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Carousel from '../components/Carousel';
 import colors from '../config/colors';
-
-const headerImg = require('../images/nero.jpg');
-
-const permsOptions = {
-  ios: 'whenInUse',
-  android: {
-    detail: 'fine',
-  },
-};
-
-const Stack = createStackNavigator();
+import { config, permissions } from '../config/location';
+import {
+  MIN_OVERALL,
+  MIN_QUALITY,
+  MIN_PRICE,
+  MIN_DISTANCE,
+} from '../config/ratings';
 
 export default function HomeScreen() {
   const [cafes, setCafes] = useState([]);
+  // const [nearby, setNearby] = useState([]);
   const [currentCoord, setCurrentCoord] = useState(null);
-  const [error, setError] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const topRatedCafes = cafes.filter(
+    (c) => c.avg_overall_rating >= MIN_OVERALL,
+  );
+  const highQualityCafes = cafes.filter(
+    (c) => c.avg_quality_rating >= MIN_QUALITY,
+  );
+  const bestPricesCafes = cafes.filter((c) => c.avg_price_rating >= MIN_PRICE);
+  // let nearbyCafes = cafes.filter((c) => c.distance_from_user < 100);
 
   function fetchCafes() {
+    setLoading(true);
     const options = {
       headers: {
-        'X-Authorization': '24a9fb8b83552ec344937deb4c3e4ced',
+        'X-Authorization': '1ef745792a34f0a34a517cfb95845e67',
       },
     };
 
@@ -35,6 +47,7 @@ export default function HomeScreen() {
       .then((res) => res.json())
       .then((data) => {
         setCafes(data);
+        setLoading(false);
       })
       .catch((err) => {
         // TODO: show alert to use
@@ -42,93 +55,79 @@ export default function HomeScreen() {
       });
   }
 
+  async function saveCoordinates() {
+    try {
+      await AsyncStorage.setItem('@lat', currentCoord.lat);
+      await AsyncStorage.setItem('@lng', currentCoord.lng);
+    } catch (err) {
+      console.log(`ERROR saving location: ${err}`);
+    }
+  }
+
   function startUpdatingLocation() {
-    // console.log('starting to update location...');
-    RNLocation.subscribeToLocationUpdates((loc) => {
-      // console.log(loc[0]);
+    RNLocation.subscribeToLocationUpdates((location) => {
       const coord = {
-        lat: loc[0].latitude.toString(),
-        lng: loc[0].longitude.toString(),
+        lat: location[0].latitude.toString(),
+        lng: location[0].longitude.toString(),
       };
       setCurrentCoord(coord);
+      // saveCoordinates();
     });
   }
 
   useEffect(() => {
-    async function resetCoordinates() {
-      try {
-        await AsyncStorage.removeItem('@lat');
-        await AsyncStorage.removeItem('@lng');
-      } catch (err) {
-        console.log(`cannot remove coords ${err}`);
-      }
-    }
-    resetCoordinates();
-    RNLocation.configure({
-      distanceFilter: 5.0, // meters
-      desiredAccuracy: {
-        ios: 'best',
-        android: 'balancedPowerAccuracy',
-      },
-    });
-    RNLocation.requestPermission({
-      ios: 'whenInUse',
-      android: {
-        detail: 'fine',
-      },
-    }).then((granted) => {
-      console.log(`granted: ${granted}`);
+    setLoading(true);
+    RNLocation.configure(config);
+    RNLocation.requestPermission(permissions).then((granted) => {
       if (granted) {
         startUpdatingLocation();
       } else {
-        setError('LOCATION_DENIED');
+        // setError('LOCATION_DENIED');
       }
     });
     fetchCafes();
   }, []);
 
   useEffect(() => {
-    async function saveCoordinates() {
-      try {
-        await AsyncStorage.setItem('@lat', currentCoord.lat);
-        await AsyncStorage.setItem('@lng', currentCoord.lng);
-      } catch (err) {
-        console.log(`ERROR saving location: ${err}`);
-        setError('SAVE_ERROR');
-      }
+    if (currentCoord !== null) {
+      saveCoordinates();
+      cafes.forEach((c) => {
+        const cafeCoord = { latitude: c.latitude, longitude: c.longitude };
+        const miles = convertDistance(
+          getDistance(currentCoord, cafeCoord),
+          'mi',
+        );
+        // eslint-disable-next-line no-param-reassign
+        c.distance_from_user = miles.toFixed(1);
+      });
+      // nearbyCafes = cafes.filter((c) => c.distance_from_user < 100);
+      setLoading(false);
     }
-    saveCoordinates();
   }, [currentCoord]);
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
+  if (loading) {
+    return (
+      <View style={styles.spinner}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <View style={styles.header}>
-        <Image source={headerImg} style={styles.img} />
-      </View>
+    <ScrollView>
       <View style={styles.container}>
         {currentCoord === null ? (
           <View>
-            <Carousel title="Top Rated" items={cafes} />
-            <Carousel title="High Quality" items={cafes} />
-            <Carousel title="Best Prices" items={cafes} />
+            <Carousel title="Top Rated" items={topRatedCafes} />
+            <Carousel title="High Quality" items={highQualityCafes} />
+            <Carousel title="Best Prices" items={bestPricesCafes} />
           </View>
         ) : (
           <View>
             <Carousel title="Nearby Cafes" items={cafes} />
-            <Carousel title="Top Rated" items={cafes} />
-            <Carousel title="High Quality" items={cafes} />
-            <Carousel title="Best Prices" items={cafes} />
+            <Carousel title="Top Rated" items={topRatedCafes} />
+            <Carousel title="High Quality" items={highQualityCafes} />
+            <Carousel title="Best Prices" items={bestPricesCafes} />
           </View>
         )}
       </View>
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     paddingLeft: 10,
-    // paddingTop: 50,
+    paddingTop: 50,
   },
   header: {
     height: 230,
@@ -150,6 +149,12 @@ const styles = StyleSheet.create({
   },
   img: {
     width: '100%',
+    height: '100%',
+  },
+  spinner: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     height: '100%',
   },
 });

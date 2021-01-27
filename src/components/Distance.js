@@ -4,6 +4,7 @@ import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 
 export default function Distance({ miles }) {
+  const concat = `${miles.toFixed(1)} mi`;
   return (
     <View style={styles.container}>
       <Icon
@@ -14,7 +15,7 @@ export default function Distance({ miles }) {
         solid
         style={{ marginRight: 3 }}
       />
-      <Text style={styles.value}>{miles.toFixed(1)}</Text>
+      <Text style={styles.value}>{concat}</Text>
     </View>
   );
 }

@@ -4,21 +4,6 @@ import PropTypes from 'prop-types';
 import CafeCard from './CafeCard';
 
 export default function Carousel({ title, items }) {
-  useEffect(() => {
-    console.log(title);
-    if (title === 'Nearby Cafes') {
-      items.sort((a, b) => {
-        if (a.avg_overall_rating < b.avg_overall_rating) {
-          return -1;
-        }
-        if (a.avg_overall_rating > b.avg_overall_rating) {
-          return 1;
-        }
-        return 0;
-      });
-    }
-  }, []);
-
   return (
     <View>
       <Text style={styles.title}>{title}</Text>
@@ -30,9 +15,9 @@ export default function Carousel({ title, items }) {
               key={item.location_id}
               cafeId={item.location_id}
               cafeName={item.location_name}
-              photo="https://picsum.photos/2000/1000"
+              photo={item.photo_path}
               avgOverallRating={item.avg_overall_rating}
-              avgQualityRating={item.avg_overall_rating}
+              avgQualityRating={item.avg_quality_rating}
               avgPriceRating={item.avg_price_rating}
               avgCleanlinessRating={item.avg_clenliness_rating} // typo from API
               totalReviews={item.location_reviews.length}
