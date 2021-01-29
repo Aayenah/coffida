@@ -1,67 +1,193 @@
 import 'react-native-gesture-handler';
-import React from 'react';
-import {
-  StyleSheet,
-  // SafeAreaView,
-  // ScrollView,
-  // View,
-  // Text,
-  // StatusBar,
-} from 'react-native';
+import React, { useReducer, useMemo, useEffect } from 'react';
+import { StyleSheet, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
-import HomeScreen from './src/screens/HomeScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import FavouritesScreen from './src/screens/FavouritesScreen';
-import AccountScreen from './src/screens/AccountScreen';
 import HomeStack from './src/stacks/HomeStack';
 import { navigationRef } from './src/utility/RootNavigation';
+import colors from './src/config/colors';
+import AccountStack from './src/stacks/AccountStack';
+import AuthStack from './src/stacks/AuthStack';
+import {
+  login,
+  logout,
+  getUserIdFromStorage,
+  getUserInfo,
+  getUserFromStore,
+} from './src/utility/Authentication';
+import { AuthContext } from './src/contexts/AuthContext';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 const App = () => {
+  const [state, dispatch] = useReducer(
+    (prevState, action) => {
+      // eslint-disable-next-line default-case
+      switch (action.type) {
+        case 'RESTORE_TOKEN':
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+            user: action.user,
+          };
+        case 'SIGN_IN':
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+            user: action.user,
+          };
+        case 'SIGN_OUT':
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+            user: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+      user: null,
+    },
+  );
+
+  useEffect(() => {
+    console.log(`APP: isLoading - ${state.isLoading}`);
+    console.log(`APP: token - ${state.userToken}`);
+    const bootstrapAsync = async () => {
+      let userToken;
+      let id;
+      let currentUser;
+      try {
+        userToken = await AsyncStorage.getItem('@token');
+        console.log(`APP: userToken - ${userToken}`);
+        id = await getUserIdFromStorage();
+        currentUser = await getUserInfo(id);
+        console.log(`APP: currentUser - ${currentUser.email}`);
+      } catch (err) {
+        console.log(`Error restoring token: ${err}`);
+      }
+      dispatch({
+        type: 'RESTORE_TOKEN',
+        token: userToken,
+        user: currentUser,
+      });
+    };
+
+    bootstrapAsync();
+    console.log(`APP: isLoading - ${state.isLoading}`);
+  }, []);
+
+  const authContext = useMemo(
+    () => ({
+      signIn: async (email, password) => {
+        let result = null;
+        try {
+          result = await login(email, password);
+          const currentUser = await getUserInfo(result?.id);
+          if (currentUser) {
+            dispatch({
+              type: 'SIGN_IN',
+              token: result.token,
+              user: currentUser,
+            });
+          }
+        } catch (e) {
+          console.log(`Sign in failed: ${e}`);
+        }
+        return result;
+      },
+      signOut: async () => {
+        try {
+          await logout();
+        } catch (e) {
+          console.log(`Sign out failed: ${e}`);
+        }
+        dispatch({ type: 'SIGN_OUT' });
+      },
+      getUser: async () => {
+        let user = null;
+        try {
+          user = await getUserFromStore();
+        } catch (e) {
+          console.log(`getUser failed: ${e}`);
+        }
+        return user;
+      },
+    }),
+    [],
+  );
+
+  if (state.isLoading) {
+    return <ActivityIndicator size="large" color="blue" />;
+  }
+
   return (
-    <NavigationContainer style={styles.body} ref={navigationRef}>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          // eslint-disable-next-line react/prop-types
-          tabBarIcon: ({ color }) => {
-            let iconName;
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer style={styles.body} ref={navigationRef}>
+        {state.userToken === null ? (
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Auth"
+              component={AuthStack}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        ) : (
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              // eslint-disable-next-line react/prop-types
+              tabBarIcon: ({ color }) => {
+                let iconName;
 
-            if (route.name === 'Home') {
-              iconName = 'mug-hot';
-            } else if (route.name === 'Search') {
-              iconName = 'search';
-            } else if (route.name === 'Favourites') {
-              iconName = 'heart';
-            } else if (route.name === 'Account') {
-              iconName = 'user';
-            }
+                if (route.name === 'Home') {
+                  iconName = 'mug-hot';
+                } else if (route.name === 'Search') {
+                  iconName = 'search';
+                } else if (route.name === 'Favourites') {
+                  iconName = 'heart';
+                } else if (route.name === 'Account') {
+                  iconName = 'user';
+                }
 
-            return (
-              <Icon
-                name={iconName}
-                type="font-awesome-5"
-                color={color}
-                size={20}
-                solid
-              />
-            );
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: '#6F2A3B',
-          inactiveTintColor: 'gray',
-          labelStyle: { fontSize: 11 },
-        }}
-      >
-        <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Search" component={SearchScreen} />
-        <Tab.Screen name="Favourites" component={FavouritesScreen} />
-        <Tab.Screen name="Account" component={AccountScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+                return (
+                  <Icon
+                    name={iconName}
+                    type="font-awesome-5"
+                    color={color}
+                    size={20}
+                    solid
+                  />
+                );
+              },
+            })}
+            tabBarOptions={{
+              activeTintColor: 'white',
+              inactiveTintColor: 'silver',
+              activeBackgroundColor: colors.primary,
+              inactiveBackgroundColor: colors.primary,
+              showLabel: false,
+              labelStyle: { fontSize: 11 },
+            }}
+          >
+            <Tab.Screen name="Home" component={HomeStack} />
+            <Tab.Screen name="Search" component={SearchScreen} />
+            <Tab.Screen name="Favourites" component={FavouritesScreen} />
+            <Tab.Screen name="Account" component={AccountStack} />
+          </Tab.Navigator>
+        )}
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 };
 

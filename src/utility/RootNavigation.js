@@ -6,3 +6,8 @@ export function navigate(name, params) {
   // eslint-disable-next-line
   navigationRef.current?.navigate(name, params);
 }
+
+export function goBack() {
+  // eslint-disable-next-line
+  navigationRef.current?.goBack();
+}

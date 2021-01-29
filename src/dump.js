@@ -25,3 +25,35 @@
 
 // const [error, setError] = useState('');
 // const [refreshing, setRefreshing] = useState(false);
+
+// if (loading) {
+//   return <ActivityIndicator size="large" color="blue" />;
+// }
+
+// return !getUser ? (
+//   <View style={styles.container}>
+//     <LoginButton />
+//     <Text style={styles.or}>Or</Text>
+//     <RegisterButton />
+//   </View>
+// ) : (
+//   <View style={styles.container}>
+//     <Text>{user && user.first_name}</Text>
+//     <Text style={styles.or}>Logged in</Text>
+//     <LogoutButton />
+//   </View>
+// );
+// }
+
+// useEffect(() => {
+//   async function getId() {
+//     setLoading(true);
+//     const id = await getUserIdFromStorage();
+//     const res = await getUserInfo(id);
+//     setUser(res);
+//     setLoading(false);
+//     console.log(GLOBAL.TOKEN);
+//     setLoading(false);
+//   }
+//   getId();
+// }, [token]);

@@ -39,7 +39,7 @@ export default function HomeScreen() {
     setLoading(true);
     const options = {
       headers: {
-        'X-Authorization': '1ef745792a34f0a34a517cfb95845e67',
+        'X-Authorization': '6829e05b0b0925585665ae15952551d8',
       },
     };
 
@@ -85,7 +85,7 @@ export default function HomeScreen() {
         // setError('LOCATION_DENIED');
       }
     });
-    fetchCafes();
+    // fetchCafes();
   }, []);
 
   useEffect(() => {
@@ -105,13 +105,13 @@ export default function HomeScreen() {
     }
   }, [currentCoord]);
 
-  if (loading) {
-    return (
-      <View style={styles.spinner}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View style={styles.spinner}>
+  //       <ActivityIndicator size="large" color={colors.primary} />
+  //     </View>
+  //   );
+  // }
 
   return (
     <ScrollView>
@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingLeft: 10,
     paddingTop: 50,
+    backgroundColor: 'white',
   },
   header: {
     height: 230,
