@@ -11,12 +11,10 @@ export default function LoginButton() {
   return (
     <Button
       title="  Logout"
-      raised
+      type="clear"
       containerStyle={styles.button_container}
       buttonStyle={styles.button}
-      icon={
-        <Icon name="sign-out-alt" type="font-awesome-5" color="white" solid />
-      }
+      titleStyle={styles.button}
       onPress={signOut}
     />
   );
@@ -24,10 +22,10 @@ export default function LoginButton() {
 
 const styles = StyleSheet.create({
   button_container: {
-    width: '80%',
+    width: '100%',
   },
   button: {
-    backgroundColor: colors.primary,
+    color: colors.secondary,
   },
   text: {
     color: 'white',

@@ -5,6 +5,7 @@ import {
   POST_ADD_USER,
   POST_LOGIN_USER,
   POST_LOGOUT_USER,
+  PATCH_UPDATE_USER,
 } from './Endpoints';
 
 const login = async (email, password) => {
@@ -31,13 +32,53 @@ const login = async (email, password) => {
       await AsyncStorage.setItem('@user_id', user.id.toString());
       await AsyncStorage.setItem('@token', user.token.toString());
       const userInfo = await getUserInfo(user.id);
-      console.log(`LOGGED IN: ${userInfo.email}`);
+      console.log(`LOGGED IN: ${user.id} - ${userInfo.email}`);
       await AsyncStorage.setItem('@user', JSON.stringify(userInfo));
     } else {
       console.log(`failed to login in: ${res.status} - ${res.statusText}`);
     }
   } catch (err) {
     console.log(`login function: ${err}`);
+  }
+  return user;
+};
+
+const register = async (firstName, lastName, email, password) => {
+  try {
+    await AsyncStorage.removeItem('@user_id');
+    await AsyncStorage.removeItem('@token');
+  } catch (err) {
+    console.log('REGISTER: failed to reset storage');
+  }
+  let user = null;
+  const newUser = {
+    first_name: firstName,
+    last_name: lastName,
+    email,
+    password,
+  };
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newUser),
+  };
+
+  try {
+    const res = await fetch(`${BASE_URL}${POST_ADD_USER}`, options);
+    if (res.ok) {
+      user = await res.json();
+      // await AsyncStorage.setItem('@user_id', user.id.toString());
+      // await AsyncStorage.setItem('@token', user.token.toString());
+      // const userInfo = await getUserInfo(user.id);
+      console.log(`REGISTERED: ${user.id}`);
+      // await AsyncStorage.setItem('@user', JSON.stringify(userInfo));
+    } else {
+      console.log(`failed to register: ${res.status} - ${res.statusText}`);
+    }
+  } catch (err) {
+    console.log(`register function: ${err}`);
   }
   return user;
 };
@@ -60,6 +101,58 @@ const logout = async () => {
   } catch (err) {
     console.log(`logout function: ${err}`);
   }
+};
+
+const updateUser = async (firstName, lastName, email, password) => {
+  let id = '';
+  let token = '';
+  let message = 'failed';
+  try {
+    id = await getUserIdFromStorage();
+    token = await getUserTokenFromStorage();
+  } catch (err) {
+    console.log('updateUser: failed to retrieve id and token from storage');
+  }
+  let newDetails = {};
+  if (!password) {
+    newDetails = {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+    };
+  } else {
+    newDetails = {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password,
+    };
+  }
+  console.log(newDetails);
+  const options = {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Authorization': token,
+    },
+    body: JSON.stringify(newDetails),
+  };
+
+  try {
+    const res = await fetch(`${BASE_URL}${PATCH_UPDATE_USER}/${id}`, options);
+    if (res.ok) {
+      await AsyncStorage.setItem('@user_id', id.toString());
+      await AsyncStorage.setItem('@token', token.toString());
+      const userInfo = await getUserInfo(id);
+      await AsyncStorage.setItem('@user', JSON.stringify(userInfo));
+      message = 'success';
+    } else {
+      console.log(`failed to update user: ${res.status} - ${res.statusText}`);
+    }
+  } catch (err) {
+    console.log(`userUpdate function: ${err}`);
+  }
+  return message;
 };
 
 const getUserInfo = async (id) => {
@@ -120,7 +213,9 @@ const getUserTokenFromStorage = async () => {
 
 module.exports = {
   login,
+  register,
   logout,
+  updateUser,
   getUserInfo,
   getUserIdFromStorage,
   getUserTokenFromStorage,

@@ -14,7 +14,7 @@ export default function AverageStars({ avg, total }) {
         name="star"
         type="font-awesome-5"
         color={colors.primary}
-        size={12}
+        size={14}
         solid
       />
       <View style={styles.row}>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rating: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'Roboto',
     fontWeight: 'bold',
   },

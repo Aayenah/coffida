@@ -1,3 +1,4 @@
+/* eslint-disable import/named */
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
@@ -20,6 +21,9 @@ import {
   MIN_PRICE,
   MIN_DISTANCE,
 } from '../config/ratings';
+import LoadingScreen from './LoadingScreen';
+import { getUserTokenFromStorage } from '../utility/Authentication';
+import { fetchCafeList } from '../utility/CafeHelpers';
 
 export default function HomeScreen() {
   const [cafes, setCafes] = useState([]);
@@ -35,83 +39,20 @@ export default function HomeScreen() {
   const bestPricesCafes = cafes.filter((c) => c.avg_price_rating >= MIN_PRICE);
   // let nearbyCafes = cafes.filter((c) => c.distance_from_user < 100);
 
-  function fetchCafes() {
+  async function prepareData() {
     setLoading(true);
-    const options = {
-      headers: {
-        'X-Authorization': '6829e05b0b0925585665ae15952551d8',
-      },
-    };
-
-    fetch('http://10.0.2.2:3333/api/1.0.0/find', options)
-      .then((res) => res.json())
-      .then((data) => {
-        setCafes(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        // TODO: show alert to use
-        console.log(err);
-      });
-  }
-
-  async function saveCoordinates() {
-    try {
-      await AsyncStorage.setItem('@lat', currentCoord.lat);
-      await AsyncStorage.setItem('@lng', currentCoord.lng);
-    } catch (err) {
-      console.log(`ERROR saving location: ${err}`);
-    }
-  }
-
-  function startUpdatingLocation() {
-    RNLocation.subscribeToLocationUpdates((location) => {
-      const coord = {
-        lat: location[0].latitude.toString(),
-        lng: location[0].longitude.toString(),
-      };
-      setCurrentCoord(coord);
-      // saveCoordinates();
-    });
+    const cafeList = await fetchCafeList();
+    setCafes(cafeList);
+    setLoading(false);
   }
 
   useEffect(() => {
-    setLoading(true);
-    RNLocation.configure(config);
-    RNLocation.requestPermission(permissions).then((granted) => {
-      if (granted) {
-        startUpdatingLocation();
-      } else {
-        // setError('LOCATION_DENIED');
-      }
-    });
-    // fetchCafes();
+    prepareData();
   }, []);
 
-  useEffect(() => {
-    if (currentCoord !== null) {
-      saveCoordinates();
-      cafes.forEach((c) => {
-        const cafeCoord = { latitude: c.latitude, longitude: c.longitude };
-        const miles = convertDistance(
-          getDistance(currentCoord, cafeCoord),
-          'mi',
-        );
-        // eslint-disable-next-line no-param-reassign
-        c.distance_from_user = miles.toFixed(1);
-      });
-      // nearbyCafes = cafes.filter((c) => c.distance_from_user < 100);
-      setLoading(false);
-    }
-  }, [currentCoord]);
-
-  // if (loading) {
-  //   return (
-  //     <View style={styles.spinner}>
-  //       <ActivityIndicator size="large" color={colors.primary} />
-  //     </View>
-  //   );
-  // }
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <ScrollView>

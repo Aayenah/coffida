@@ -1,119 +1,137 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 import { AuthContext } from '../contexts/AuthContext';
+import { isEmailValid, isNameValid } from '../utility/InputValidator';
+// eslint-disable-next-line import/named
+import { updateUser } from '../utility/Authentication';
+import LogoutButton from './LogoutButton';
+import colors from '../config/colors';
+import * as RootNavigation from '../utility/RootNavigation';
 
 export default function UserProfile() {
-  const { signIn, getUser } = useContext(AuthContext);
+  const { getUser } = useContext(AuthContext);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
-  const [firstNameDisabled, setFirstNameDisabled] = useState(true);
-  const [lastNameDisabled, setLastNameDisabled] = useState(true);
-  const [emailDisabled, setEmailDisabled] = useState(true);
-  const [passwordDisabled, setPasswordDisabled] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
+    setError('');
+    setMessage('');
     getUser().then((value) => {
-      console.log('ACCOUNTSCREEN', value);
       setUser(value);
+      setFirstName(value.first_name);
+      setLastName(value.last_name);
+      setEmail(value.email);
     });
   }, []);
 
   async function initiateSave() {
-    //
+    setMessage('');
+    setError('');
+    if (!isNameValid(firstName)) return setError('Invalid first name');
+    if (!isNameValid(lastName)) return setError('Invalid last name');
+    if (!isEmailValid(email)) return setError('Invalid email');
+    setButtonLoading(true);
+    const result = await updateUser(firstName, lastName, email, null);
+    if (result === 'success') {
+      setMessage('Successfully updated profile');
+    }
+    setButtonLoading(false);
+    return console.log(result);
   }
 
-  if (user === null) {
-    return <Text>no user</Text>;
+  async function resetProfile() {
+    const currentUser = await getUser();
+    if (currentUser) {
+      setFirstName(currentUser.first_name);
+      setLastName(currentUser.last_name);
+      setEmail(currentUser.email);
+    } else {
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+    }
   }
 
   return (
     <View style={styles.container}>
+      <Text style={styles.msg}>{message}</Text>
+      <Text style={styles.error}>{error}</Text>
       <Input
         label="First Name"
-        defaultValue={user.first_name}
-        disabled={firstNameDisabled}
+        defaultValue={firstName}
         leftIcon={
-          <Icon name="envelope" type="font-awesome-5" color="#424242" solid />
-        }
-        rightIcon={
           <Icon
-            name="edit"
+            name="user-circle"
             type="font-awesome-5"
             color="#424242"
             solid
-            onPress={() => setFirstNameDisabled(!firstNameDisabled)}
           />
         }
         onChangeText={(value) => setFirstName(value)}
       />
       <Input
         label="Last Name"
-        defaultValue={user.last_name}
-        disabled={lastNameDisabled}
+        defaultValue={lastName}
         leftIcon={
-          <Icon name="envelope" type="font-awesome-5" color="#424242" solid />
-        }
-        rightIcon={
           <Icon
-            name="edit"
+            name="user-circle"
             type="font-awesome-5"
             color="#424242"
             solid
-            onPress={() => setLastNameDisabled(!lastNameDisabled)}
           />
         }
         onChangeText={(value) => setLastName(value)}
       />
       <Input
         label="Email"
-        defaultValue={user.email}
-        disabled={emailDisabled}
+        defaultValue={email}
         leftIcon={
           <Icon name="envelope" type="font-awesome-5" color="#424242" solid />
         }
-        rightIcon={
-          <Icon
-            name="edit"
-            type="font-awesome-5"
-            color="#424242"
-            solid
-            onPress={() => setEmailDisabled(!emailDisabled)}
-          />
-        }
         onChangeText={(value) => setEmail(value)}
       />
-      <Input
-        label="Password"
-        // secureTextEntry
-        disabled={passwordDisabled}
-        leftIcon={
-          <Icon name="lock" type="font-awesome-5" color="#424242" solid />
-        }
-        rightIcon={
-          <Icon
-            name="edit"
-            type="font-awesome-5"
-            color="#424242"
-            solid
-            onPress={() => setPasswordDisabled(!passwordDisabled)}
-          />
-        }
-        onChangeText={(value) => setPassword(value)}
-      />
+      <Text style={styles.error}>{error}</Text>
+      <View style={styles.saveRow}>
+        <Button
+          title="  Save"
+          raised
+          containerStyle={styles.button_container}
+          buttonStyle={styles.save}
+          onPress={initiateSave}
+          loading={buttonLoading}
+          icon={
+            <Icon
+              name="save"
+              type="font-awesome-5"
+              size={20}
+              color="white"
+              solid
+            />
+          }
+        />
+        <Button
+          title="Reset"
+          raised
+          containerStyle={styles.button_container}
+          buttonStyle={styles.reset}
+          onPress={resetProfile}
+        />
+      </View>
       <Button
-        title="Save Profile"
-        raised
-        containerStyle={styles.button_container}
-        buttonStyle={styles.button}
-        loading={loading}
-        onPress={initiateSave}
+        title="Change Password"
+        type="clear"
+        containerStyle={styles.pwd_container}
+        titleStyle={styles.pwd}
+        onPress={() => RootNavigation.navigate('Password Modal')}
       />
+      <LogoutButton />
     </View>
   );
 }
@@ -122,12 +140,36 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     padding: 10,
     width: '100%',
   },
-  or: {
+  error: {
+    color: 'crimson',
     fontWeight: 'bold',
-    marginVertical: 20,
+    marginBottom: 10,
+  },
+  msg: {
+    color: 'darkgreen',
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  saveRow: {
+    flexDirection: 'row',
+  },
+  save: {
+    backgroundColor: colors.primary,
+  },
+  button_container: {
+    marginHorizontal: 10,
+  },
+  reset: {
+    backgroundColor: colors.secondary,
+  },
+  pwd_container: {
+    marginTop: 30,
+  },
+  pwd: {
+    color: colors.secondary,
   },
 });

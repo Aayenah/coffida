@@ -57,3 +57,94 @@
 //   }
 //   getId();
 // }, [token]);
+
+// const [firstNameDisabled, setFirstNameDisabled] = useState(true);
+// const [lastNameDisabled, setLastNameDisabled] = useState(true);
+// const [emailDisabled, setEmailDisabled] = useState(true);
+// const [passwordDisabled, setPasswordDisabled] = useState(true);
+
+// rightIcon={
+//   <Icon
+//     name="edit"
+//     type="font-awesome-5"
+//     color="#424242"
+//     solid
+//     onPress={() => setFirstNameDisabled(!firstNameDisabled)}
+//   />
+// }
+
+// fetch('http://10.0.2.2:3333/api/1.0.0/find', options)
+//   .then((res) => res.json())
+//   .then((data) => {
+//     setCafes(data);
+//     setLoading(false);
+//   })
+//   .catch((err) => {
+//     // TODO: show alert to use
+//     console.log(err);
+//   });
+
+// ? important
+// async function getCurrentCoord() {
+//   let currentCoord = null;
+//   try {
+//     const currentLat = await AsyncStorage.getItem('@lat');
+//     const currentLng = await AsyncStorage.getItem('@lng');
+//     if (currentLat !== null && currentLng !== null) {
+//       currentCoord = { latitude: currentLat, longitude: currentLng };
+//     }
+//   } catch (err) {
+//     console.log(`cannot retrieve coords ${err}`);
+//   }
+//   return currentCoord;
+// }
+
+// async function distanceInMiles() {
+//   const currentCoord = await getCurrentCoord();
+//   let inMiles = 0;
+//   if (currentCoord && cafeCoord) {
+//     const distanceInMeters = getDistance(currentCoord, cafeCoord);
+//     inMiles = convertDistance(distanceInMeters, 'mi');
+//     setDistance(inMiles);
+//   } else {
+//     // console.log('currentCoords null');
+//   }
+//   return inMiles;
+// }
+
+// useEffect(() => {
+//   if (currentCoord) {
+//     saveCoordinates();
+//     cafes.forEach((c) => {
+//       const cafeCoord = { latitude: c.latitude, longitude: c.longitude };
+//       const miles = convertDistance(
+//         getDistance(currentCoord, cafeCoord),
+//         'mi',
+//       );
+//       // eslint-disable-next-line no-param-reassign
+//       c.distance_from_user = miles.toFixed(1);
+//     });
+//     // nearbyCafes = cafes.filter((c) => c.distance_from_user < 100);
+//     setLoading(false);
+//   }
+// }, [currentCoord]);
+// ?
+
+// async function fetchCafes() {
+//   setLoading(true);
+//   const token = await getUserTokenFromStorage();
+//   const options = {
+//     headers: {
+//       'X-Authorization': token,
+//     },
+//   };
+
+//   try {
+//     const res = await fetch('http://10.0.2.2:3333/api/1.0.0/find', options);
+//     const data = await res.json();
+//     setCafes(data);
+//     setLoading(false);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }

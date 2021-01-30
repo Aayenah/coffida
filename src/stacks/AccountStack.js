@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import AccountScreen from '../screens/AccountScreen';
-import LoginModal from '../modals/LoginModal';
+import PasswordModal from '../modals/PasswordModal';
 import RegisterModal from '../modals/RegisterModal';
 
 const Stack = createStackNavigator();
@@ -17,14 +17,9 @@ export default function AccountStack() {
         }}
       />
       <Stack.Screen
-        name="Login Modal"
-        component={LoginModal}
-        options={{ title: 'Login' }}
-      />
-      <Stack.Screen
-        name="Register Modal"
-        component={RegisterModal}
-        options={{ title: 'Register' }}
+        name="Password Modal"
+        component={PasswordModal}
+        options={{ title: 'Change Password' }}
       />
     </Stack.Navigator>
   );

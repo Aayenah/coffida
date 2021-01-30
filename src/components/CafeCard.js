@@ -16,6 +16,8 @@ import Distance from './Distance';
 import AspectRating from './AspectRating';
 import FavouritesButton from './FavouritesButton';
 import * as RootNavigation from '../utility/RootNavigation';
+// eslint-disable-next-line import/named
+import { fetchCafeInfo } from '../utility/CafeHelpers';
 
 const windowWidth = Dimensions.get('window').width;
 export default function CafeCard({
@@ -28,64 +30,16 @@ export default function CafeCard({
   avgCleanlinessRating,
   totalReviews,
 }) {
-  const [distance, setDistance] = useState(0);
-  const [cafeCoord, setCafeCoord] = useState(null);
-
-  async function getCurrentCoord() {
-    let currentCoord = null;
-    try {
-      const currentLat = await AsyncStorage.getItem('@lat');
-      const currentLng = await AsyncStorage.getItem('@lng');
-      if (currentLat !== null && currentLng !== null) {
-        currentCoord = { latitude: currentLat, longitude: currentLng };
-      }
-    } catch (err) {
-      console.log(`cannot retrieve coords ${err}`);
-    }
-    return currentCoord;
-  }
-
-  async function distanceInMiles() {
-    const currentCoord = await getCurrentCoord();
-    let inMiles = 0;
-    if (currentCoord && cafeCoord) {
-      const distanceInMeters = getDistance(currentCoord, cafeCoord);
-      inMiles = convertDistance(distanceInMeters, 'mi');
-      setDistance(inMiles);
-    } else {
-      // console.log('currentCoords null');
-    }
-    return inMiles;
-  }
-
-  function fetchCafeInfo() {
-    fetch(`http://10.0.2.2:3333/api/1.0.0/location/${cafeId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        const coord = {
-          latitude: data.latitude.toString(),
-          longitude: data.longitude.toString(),
-        };
-        setCafeCoord(coord);
-      })
-      .catch((err) => {
-        // TODO: show alert to user
-        console.log(`FETCH ERROR: ${err}`);
-      });
-  }
-
-  useEffect(() => {
-    fetchCafeInfo();
-  }, []);
-
-  useEffect(() => {
-    distanceInMiles();
-  }, [cafeCoord]);
-
   function goToCafeScreen() {
     RootNavigation.navigate('Cafe Screen', {
       cafeId,
       cafeName,
+      photo,
+      avgOverallRating,
+      avgQualityRating,
+      avgPriceRating,
+      avgCleanlinessRating,
+      totalReviews,
     });
   }
 
@@ -98,8 +52,9 @@ export default function CafeCard({
         <View style={styles.body}>
           <View style={styles.titleRow}>
             <Text style={styles.cafeName}>{cafeName}</Text>
-            <Text style={styles.cafeName}>{cafeId}</Text>
-            {distance > 0 ? <Distance miles={distance} /> : <Text>-</Text>}
+            {/* <Text style={styles.cafeName}>{cafeId}</Text> */}
+            {/* {distance > 0 ? <Distance miles={distance} /> : <Text>-</Text>} */}
+            <Distance miles={0} />
           </View>
           <AverageStars avg={avgOverallRating} total={totalReviews} />
           <View style={styles.aspectRow}>
@@ -143,7 +98,7 @@ const styles = StyleSheet.create({
   },
   cafeName: {
     fontFamily: 'Roboto',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   body: {

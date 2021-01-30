@@ -1,52 +1,89 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 import colors from '../config/colors';
 // eslint-disable-next-line
-import { login } from '../utility/Authentication';
+import { register } from '../utility/Authentication';
 import * as RootNavigation from '../utility/RootNavigation';
+import {
+  isEmailValid,
+  isNameValid,
+  isPasswordValid,
+} from '../utility/InputValidator';
+import { AuthContext } from '../contexts/AuthContext';
 
 export default function RegisterModal({ navigation }) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [buttonLoading, setButtonLoading] = useState(false);
+  const { signIn } = useContext(AuthContext);
 
   useEffect(() => {
     setError('');
+    setMessage('');
+    setButtonLoading(false);
   }, []);
 
-  async function initiateLogin() {
-    if (email.length < 1) {
-      setError('Please enter your email');
-      return;
-    }
-    if (password.length < 1) {
-      setError('Please enter your password');
-      return;
-    }
+  async function initiateRegister() {
+    setMessage('');
     setError('');
-    setLoading(true);
-    try {
-      const result = await login(email, password);
-      if (result !== null) {
-        navigation.goBack();
-      } else {
+    if (!isNameValid(firstName)) return setError('Invalid first name');
+    if (!isNameValid(lastName)) return setError('Invalid last name');
+    if (!isEmailValid(email)) return setError('Invalid email');
+    if (!isPasswordValid(password)) return setError('Invalid password');
+
+    setButtonLoading(true);
+    const result = await register(firstName, lastName, email, password);
+    console.log('register result: ', result);
+    setButtonLoading(false);
+    if (result) {
+      const user = await signIn(email, password);
+      console.log('user: ', user);
+      if (!user) {
         setError('Invalid credentials');
       }
-    } catch (err) {
-      console.log(`initiateLogin: ${err}`);
-      setError('Unable to login. Please try again.');
     }
-    setTimeout(() => setLoading(false), 2000);
+    return console.log(result);
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.error}>{error}</Text>
       <Input
+        placeholder="First Name"
+        defaultValue={firstName}
+        leftIcon={
+          <Icon
+            name="user-circle"
+            type="font-awesome-5"
+            color="#424242"
+            solid
+          />
+        }
+        onChangeText={(value) => setFirstName(value)}
+      />
+      <Input
+        placeholder="Last Name"
+        defaultValue={lastName}
+        leftIcon={
+          <Icon
+            name="user-circle"
+            type="font-awesome-5"
+            color="#424242"
+            solid
+          />
+        }
+        onChangeText={(value) => setLastName(value)}
+      />
+      <Input
         placeholder="Email"
+        defaultValue={email}
         leftIcon={
           <Icon name="envelope" type="font-awesome-5" color="#424242" solid />
         }
@@ -60,12 +97,12 @@ export default function RegisterModal({ navigation }) {
         onChangeText={(value) => setPassword(value)}
       />
       <Button
-        title="Login"
+        title="Register"
         raised
         containerStyle={styles.button_container}
         buttonStyle={styles.button}
-        loading={loading}
-        onPress={initiateLogin}
+        loading={buttonLoading}
+        onPress={initiateRegister}
       />
     </View>
   );
@@ -74,10 +111,10 @@ export default function RegisterModal({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    paddingTop: 100,
+    padding: 10,
+    width: '100%',
   },
   text: {
     color: 'black',
@@ -91,5 +128,6 @@ const styles = StyleSheet.create({
   error: {
     color: 'crimson',
     fontWeight: 'bold',
+    margin: 10,
   },
 });

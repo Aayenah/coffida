@@ -21,6 +21,7 @@ import {
   getUserFromStore,
 } from './src/utility/Authentication';
 import { AuthContext } from './src/contexts/AuthContext';
+import LoadingScreen from './src/screens/LoadingScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -129,7 +130,7 @@ const App = () => {
   );
 
   if (state.isLoading) {
-    return <ActivityIndicator size="large" color="blue" />;
+    return <LoadingScreen />;
   }
 
   return (
@@ -172,8 +173,8 @@ const App = () => {
               },
             })}
             tabBarOptions={{
-              activeTintColor: 'white',
-              inactiveTintColor: 'silver',
+              activeTintColor: colors.activeTab,
+              inactiveTintColor: colors.inactiveTab,
               activeBackgroundColor: colors.primary,
               inactiveBackgroundColor: colors.primary,
               showLabel: false,

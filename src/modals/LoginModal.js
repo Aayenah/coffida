@@ -11,13 +11,9 @@ import { AuthContext } from '../contexts/AuthContext';
 export default function LoginModal({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [error, setError] = useState('');
   const { signIn, getUser } = useContext(AuthContext);
-
-  useEffect(() => {
-    setError('');
-  }, []);
 
   async function initiateLogin() {
     if (email.length < 1) {
@@ -29,14 +25,12 @@ export default function LoginModal({ navigation }) {
       return;
     }
     setError('');
-    setLoading(true);
+    setButtonLoading(true);
     try {
       const result = await signIn(email, password);
       console.log(`initiateLogin result: ${result}`);
-      setLoading(false);
-      if (result !== null) {
-        navigation.goBack();
-      } else {
+      if (!result) {
+        setButtonLoading(false);
         setError('Invalid credentials');
       }
     } catch (err) {
@@ -69,7 +63,7 @@ export default function LoginModal({ navigation }) {
         raised
         containerStyle={styles.button_container}
         buttonStyle={styles.button}
-        loading={loading}
+        loading={buttonLoading}
         onPress={initiateLogin}
       />
     </View>

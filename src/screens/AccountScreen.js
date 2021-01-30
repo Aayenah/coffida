@@ -6,10 +6,11 @@ import LogoutButton from '../components/LogoutButton';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
 import { AuthContext } from '../contexts/AuthContext';
 import UserProfile from '../components/UserProfile';
+import LoadingScreen from './LoadingScreen';
+import colors from '../config/colors';
 
 export default function AccountScreen() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
   const { getUser } = useContext(AuthContext);
 
   useEffect(() => {
@@ -19,15 +20,13 @@ export default function AccountScreen() {
     });
   }, []);
 
-  if (loading) {
-    return <ActivityIndicator size="large" color="blue" />;
+  if (!user) {
+    return <LoadingScreen />;
   }
 
   return (
     <View style={styles.container}>
       <UserProfile />
-      <Text style={styles.or}>Logged in</Text>
-      <LogoutButton />
     </View>
   );
 }
@@ -35,7 +34,7 @@ export default function AccountScreen() {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
     padding: 10,
