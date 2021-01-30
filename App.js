@@ -1,6 +1,7 @@
+/* eslint-disable import/named */
 import 'react-native-gesture-handler';
 import React, { useReducer, useMemo, useEffect } from 'react';
-import { StyleSheet, ActivityIndicator } from 'react-native';
+import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -28,6 +29,7 @@ const Stack = createStackNavigator();
 
 const App = () => {
   const [state, dispatch] = useReducer(
+    // eslint-disable-next-line consistent-return
     (prevState, action) => {
       // eslint-disable-next-line default-case
       switch (action.type) {
