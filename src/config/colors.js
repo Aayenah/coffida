@@ -5,6 +5,7 @@ const colors = {
   accent: '#ab9776',
   activeTab: '#ffffff',
   inactiveTab: '#8a8a8a',
+  bodyText: '#262626',
 };
 
 module.exports = colors;

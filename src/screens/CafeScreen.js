@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Divider } from 'react-native-elements';
 import ImageHeader from '../components/ImageHeader';
 import CafeTitle from '../components/CafeTitle';
 import AverageStars from '../components/AverageStars';
@@ -8,31 +9,33 @@ import Distance from '../components/Distance';
 import AspectRating from '../components/AspectRating';
 import FavouritesButton from '../components/FavouritesButton';
 import colors from '../config/colors';
+import ReviewsSection from '../components/ReviewsSection';
 
 export default function CafeScreen({ route }) {
+  const { cafe } = route.params;
   return (
     <ScrollView style={styles.container}>
-      <ImageHeader photoUri={route.params.photo} />
+      <ImageHeader photoUri={cafe.photo_path} />
       <View style={styles.info}>
         <View style={styles.title_row}>
-          <CafeTitle title={route.params.cafeName} />
+          <CafeTitle title={cafe.location_name} town={cafe.location_town} />
           <FavouritesButton />
         </View>
         <AverageStars
-          avg={route.params.avgOverallRating}
-          total={route.params.totalReviews}
+          avg={cafe.avg_overall_rating}
+          total={cafe.location_reviews.length}
         />
+        <Divider style={styles.divider} />
         <View style={styles.aspect_row}>
-          <AspectRating
-            aspect="Quality"
-            rating={route.params.avgQualityRating}
-          />
-          <AspectRating aspect="Price" rating={route.params.avgPriceRating} />
+          <AspectRating aspect="Quality" rating={cafe.avg_quality_rating} />
+          <AspectRating aspect="Price" rating={cafe.avg_price_rating} />
           <AspectRating
             aspect="Cleanliness"
-            rating={route.params.avgCleanlinessRating}
+            rating={cafe.avg_clenliness_rating}
           />
         </View>
+        <Divider style={styles.divider} />
+        <ReviewsSection cafe={cafe} />
       </View>
     </ScrollView>
   );
@@ -41,6 +44,7 @@ export default function CafeScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
+    backgroundColor: 'white',
   },
   info: {
     paddingHorizontal: 10,
@@ -51,11 +55,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // paddingTop: 10,
   },
+  town: {
+    marginBottom: 25,
+  },
+  divider: {
+    marginVertical: 20,
+    color: colors.bodyText,
+  },
   aspect_row: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 8,
-    backgroundColor: colors.accent,
+    // backgroundColor: colors.accent,
     paddingVertical: 2,
   },
   header: {

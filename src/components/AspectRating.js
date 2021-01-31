@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
+import colors from '../config/colors';
 
 export default function AspectRating({ aspect, rating }) {
   const info = rating < 1 ? '-' : `${rating.toFixed(1)}`;
@@ -27,10 +28,12 @@ const styles = StyleSheet.create({
   aspect: {
     fontSize: 12,
     fontFamily: 'Roboto',
+    color: colors.bodyText,
   },
   rating: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'Roboto',
     fontWeight: 'bold',
+    color: colors.bodyText,
   },
 });

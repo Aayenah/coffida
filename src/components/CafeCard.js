@@ -21,46 +21,56 @@ import { fetchCafeInfo } from '../utility/CafeHelpers';
 
 const windowWidth = Dimensions.get('window').width;
 export default function CafeCard({
-  cafeId,
-  cafeName,
-  photo,
-  avgOverallRating,
-  avgQualityRating,
-  avgPriceRating,
-  avgCleanlinessRating,
-  totalReviews,
+  // cafeId,
+  // cafeName,
+  // photo,
+  // avgOverallRating,
+  // avgQualityRating,
+  // avgPriceRating,
+  // avgCleanlinessRating,
+  // reviews,
+  // totalReviews,
+  cafe,
 }) {
   function goToCafeScreen() {
     RootNavigation.navigate('Cafe Screen', {
-      cafeId,
-      cafeName,
-      photo,
-      avgOverallRating,
-      avgQualityRating,
-      avgPriceRating,
-      avgCleanlinessRating,
-      totalReviews,
+      // cafeId,
+      // cafeName,
+      // photo,
+      // avgOverallRating,
+      // avgQualityRating,
+      // avgPriceRating,
+      // avgCleanlinessRating,
+      // reviews,
+      // totalReviews,
+      cafe,
     });
   }
 
   return (
     <TouchableWithoutFeedback onPress={goToCafeScreen}>
       <Card containerStyle={styles.card}>
-        <ImageBackground source={{ uri: photo }} style={styles.img}>
+        <ImageBackground source={{ uri: cafe.photo_path }} style={styles.img}>
           <FavouritesButton />
         </ImageBackground>
         <View style={styles.body}>
           <View style={styles.titleRow}>
-            <Text style={styles.cafeName}>{cafeName}</Text>
+            <Text style={styles.cafeName}>{cafe.location_name}</Text>
             {/* <Text style={styles.cafeName}>{cafeId}</Text> */}
             {/* {distance > 0 ? <Distance miles={distance} /> : <Text>-</Text>} */}
             <Distance miles={0} />
           </View>
-          <AverageStars avg={avgOverallRating} total={totalReviews} />
+          <AverageStars
+            avg={cafe.avg_overall_rating}
+            total={cafe.location_reviews.length}
+          />
           <View style={styles.aspectRow}>
-            <AspectRating aspect="Quality" rating={avgQualityRating} />
-            <AspectRating aspect="Price" rating={avgPriceRating} />
-            <AspectRating aspect="Cleanliness" rating={avgCleanlinessRating} />
+            <AspectRating aspect="Quality" rating={cafe.avg_quality_rating} />
+            <AspectRating aspect="Price" rating={cafe.avg_price_rating} />
+            <AspectRating
+              aspect="Cleanliness"
+              rating={cafe.avg_clenliness_rating}
+            />
           </View>
         </View>
       </Card>
@@ -69,14 +79,16 @@ export default function CafeCard({
 }
 
 CafeCard.propTypes = {
-  cafeId: PropTypes.number.isRequired,
-  cafeName: PropTypes.string.isRequired,
-  photo: PropTypes.string.isRequired,
-  avgOverallRating: PropTypes.number.isRequired,
-  totalReviews: PropTypes.number.isRequired,
-  avgQualityRating: PropTypes.number.isRequired,
-  avgPriceRating: PropTypes.number.isRequired,
-  avgCleanlinessRating: PropTypes.number.isRequired,
+  // cafeId: PropTypes.number.isRequired,
+  // cafeName: PropTypes.string.isRequired,
+  // photo: PropTypes.string.isRequired,
+  // avgOverallRating: PropTypes.number.isRequired,
+  // avgQualityRating: PropTypes.number.isRequired,
+  // avgPriceRating: PropTypes.number.isRequired,
+  // avgCleanlinessRating: PropTypes.number.isRequired,
+  // reviews: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // totalReviews: PropTypes.number.isRequired,
+  cafe: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
 const styles = StyleSheet.create({

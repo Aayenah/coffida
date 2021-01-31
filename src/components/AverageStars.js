@@ -41,11 +41,13 @@ const styles = StyleSheet.create({
   rating: {
     fontSize: 14,
     fontFamily: 'Roboto',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    color: colors.bodyText,
   },
   total: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'Roboto',
+    color: colors.bodyText,
   },
   row: {
     flexDirection: 'row',
