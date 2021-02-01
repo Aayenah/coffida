@@ -8,7 +8,7 @@ export default function LikeButton() {
       name="thumbs-up"
       type="font-awesome-5"
       color={colors.primary}
-      size={20}
+      size={18}
       raised
       style={{ margin: 0 }}
       onPress={() => console.log('like')}

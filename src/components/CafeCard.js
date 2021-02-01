@@ -88,7 +88,8 @@ CafeCard.propTypes = {
   // avgCleanlinessRating: PropTypes.number.isRequired,
   // reviews: PropTypes.arrayOf(PropTypes.object).isRequired,
   // totalReviews: PropTypes.number.isRequired,
-  cafe: PropTypes.objectOf(PropTypes.object).isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  cafe: PropTypes.object.isRequired,
 };
 
 const styles = StyleSheet.create({

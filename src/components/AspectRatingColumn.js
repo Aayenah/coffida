@@ -1,24 +1,55 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Rating, Divider } from 'react-native-elements';
+import { ProgressBar, Colors } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
 import AspectRating from './AspectRating';
 import LikeButton from './LikeButton';
 
-export default function AspectRatingColumn({ review }) {
+export default function AspectRatingColumn({ cafe }) {
   return (
     <View style={styles.container}>
-      <Text>Quality</Text>
-      <Text>Price</Text>
-      <Text>Cleanliness</Text>
+      <View style={styles.row}>
+        <Text style={styles.label}>Quality</Text>
+        <Rating
+          readonly
+          fractions={1}
+          startingValue={cafe.avg_quality_rating}
+          type="star"
+          imageSize={14}
+          style={styles.stars}
+        />
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Price</Text>
+        <Rating
+          readonly
+          fractions={1}
+          startingValue={cafe.avg_price_rating}
+          type="star"
+          imageSize={14}
+          style={styles.stars}
+        />
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Cleanliness</Text>
+        <Rating
+          readonly
+          fractions={1}
+          startingValue={cafe.avg_cleanliness_rating}
+          type="star"
+          imageSize={14}
+          style={styles.stars}
+        />
+      </View>
     </View>
   );
 }
 
 AspectRatingColumn.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  // review: PropTypes.object.isRequired,
+  cafe: PropTypes.object.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -26,30 +57,24 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    borderBottomColor: colors.bodyText,
-    borderBottomWidth: 0.6,
-    borderTopColor: 'lightgrey',
-    borderTopWidth: 1,
-    paddingVertical: 20,
+    width: '45%',
   },
-  stars: {
-    marginBottom: 10,
-  },
-  aspect_row: {
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
-    marginBottom: 10,
   },
-  body: {
-    width: '100%',
-    color: colors.bodyText,
+  label: {
     fontSize: 14,
     fontFamily: 'Roboto',
-    marginBottom: 10,
+    color: colors.bodyText,
   },
-  divider: {
-    marginVertical: 20,
+  stars: {
+    // marginLeft: 10,
+  },
+  stars_row: {
+    flexDirection: 'row',
+    marginBottom: 20,
   },
 });

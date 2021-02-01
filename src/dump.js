@@ -148,3 +148,34 @@
 //     console.log(err);
 //   }
 // }
+
+// <View style={styles.aspect_row}>
+//  <AspectRating aspect="Quality" rating={cafe.avg_quality_rating} />
+//  <AspectRating aspect="Price" rating={cafe.avg_price_rating} />
+//  <AspectRating aspect="Cleanliness" rating={cafe.avg_clenliness_rating} />
+// </View>;
+
+// <View style={styles.container}>
+//   <Rating
+//     readonly
+//     fractions={1}
+//     startingValue={review.review_overallrating}
+//     type="custom"
+//     ratingColor={colors.primary}
+//     ratingTextColor={colors.secondary}
+//     ratingBackgroundColor="silver"
+//     tintColor="white"
+//     imageSize={16}
+//     style={styles.stars}
+//   />
+//   <View style={styles.aspect_row}>
+//     <AspectRating aspect="Quality" rating={review.review_qualityrating} />
+//     <AspectRating aspect="Price" rating={review.review_pricerating} />
+//     <AspectRating
+//       aspect="Cleanliness"
+//       rating={review.review_clenlinessrating}
+//     />
+//   </View>
+//   <Text style={styles.body}>{review.review_body}</Text>
+//   <LikeButton />
+// </View>

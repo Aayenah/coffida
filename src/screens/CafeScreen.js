@@ -26,15 +26,8 @@ export default function CafeScreen({ route }) {
           total={cafe.location_reviews.length}
         />
         <Divider style={styles.divider} />
-        <View style={styles.aspect_row}>
-          <AspectRating aspect="Quality" rating={cafe.avg_quality_rating} />
-          <AspectRating aspect="Price" rating={cafe.avg_price_rating} />
-          <AspectRating
-            aspect="Cleanliness"
-            rating={cafe.avg_clenliness_rating}
-          />
-        </View>
-        <Divider style={styles.divider} />
+
+        {/* <Divider style={styles.divider} /> */}
         <ReviewsSection cafe={cafe} />
       </View>
     </ScrollView>
