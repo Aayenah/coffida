@@ -18,8 +18,39 @@
   [ ] Search for cafes by name, ratings etc
 [ ] Setup favourites screen
   [ ] Display favourite cafes
-[ ] Setup account screen
-  [ ] 
+[X] Setup authentication screen
+  [X] Check if user is authenticated
+  [X] Present option to login or register
+  [X] On login or register, take user to home screen
+  [X] Validate data submitted by user
+[X] Setup account screen
+  [X] Display user information
+  [X] Allow user to edit info and save
+  [X] Allow user to reset unsaved info
+  [X] Allow user to change password
+  [X] Validate data submitted by user
+  [X] Allow user to logout
+[X] Setup cafe screen
+  [X] Display cafe information
+  [ ] Allow user to add cafe to favourites
+  [X] Show overall and aspect ratings
+  [X] Add button to show all reviews
+[X] Setup review screen
+  [ ] Allow user to add a review
+  [ ] Setup review component
+    [X] Show reviewer's avatar, name and total reviews
+    [X] Show star rating
+    [X] Show aspect ratings
+    [X] Show review body
+    [X] Add like button and like count
+    [X] Show if review is already liked or not
+    [ ] Allow user to edit owned reviews
+    [ ] Allow user to delete owned reviews
+    [ ] setup photo upload
+      [ ] Add photo to review owned by current user
+      [ ] Delete photo uploaded by user
+
+
 
   
 

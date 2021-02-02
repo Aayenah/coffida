@@ -6,28 +6,70 @@ import PropTypes from 'prop-types';
 import colors from '../config/colors';
 import AspectRating from './AspectRating';
 import LikeButton from './LikeButton';
-import { getUserInfo } from '../utility/Authentication';
+import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
+import { likeReview, unlikeReview } from '../utility/ReviewHelpers';
 
 export default function CafeReview({ review }) {
-  const [user, setUser] = useState(null);
-  const [initials, setInitials] = useState('??');
-  const fullName = `${user?.first_name} ${user?.last_name}`;
-  const reviewCount = user ? user.reviews.length : 0;
+  const [reviewer, setReviewer] = useState(null);
+  const [likedReviews, setLikedReviews] = useState([]);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likes, setLikes] = useState(review.likes);
+  const [initials, setInitials] = useState('-');
+  const fullName = `${reviewer?.first_name} ${reviewer?.last_name}`;
+  const reviewCount = reviewer ? reviewer.reviews.length : 0;
   const reviewCountString = `${reviewCount} Reviews`;
   const likesString = `${review.likes} likes`;
 
   async function prepareUserInfo() {
     const data = await getUserInfo(review.review_user_id);
-    setUser(data);
+    setReviewer(data);
     if (data) {
       setInitials(`${data.first_name.charAt(0)}${data.last_name.charAt(0)}`);
     } else {
-      setInitials('??');
+      setInitials('-');
+    }
+  }
+
+  async function checkLikedReviews() {
+    const id = await getUserIdFromStorage();
+    const user = await getUserInfo(id);
+    if (user) {
+      const reviewLiked = user.liked_reviews.some(
+        (r) => r.review.review_id === review.review_id,
+      );
+      console.log(
+        `reviewId: ${review.review_id} liked by ${user.email}? ${reviewLiked}`,
+      );
+      setIsLiked(reviewLiked);
+    }
+  }
+
+  async function onLike() {
+    if (isLiked) {
+      const res = await unlikeReview(
+        review.review_location_id,
+        review.review_id,
+      );
+      if (res.ok) {
+        setLikes(likes - 1);
+        setIsLiked(false);
+      } else {
+        console.log('failed to UNLIKE review ', res);
+      }
+    } else {
+      const res = await likeReview(review.review_location_id, review.review_id);
+      if (res.ok) {
+        setLikes(likes + 1);
+        setIsLiked(true);
+      } else {
+        console.log('failed to LIKE review ', res);
+      }
     }
   }
 
   useEffect(() => {
     prepareUserInfo();
+    checkLikedReviews();
   }, []);
 
   return (
@@ -43,6 +85,7 @@ export default function CafeReview({ review }) {
             containerStyle={styles.avatar}
           />
           <Text style={styles.full_name}>{fullName}</Text>
+          <Text style={styles.full_name}>{review.review_id}</Text>
           <Text style={styles.review_count}>{reviewCountString}</Text>
         </View>
         <View style={styles.body}>
@@ -76,8 +119,8 @@ export default function CafeReview({ review }) {
           <Text style={styles.review_text}>{review.review_body}</Text>
           <Card.Divider style={{ marginBottom: 0 }} />
           <View style={styles.footer}>
-            <LikeButton />
-            <Text style={styles.likes}>{likesString}</Text>
+            <LikeButton isLiked={isLiked} onLike={onLike} />
+            <Text style={styles.likes}>{`${likes} likes`}</Text>
           </View>
         </View>
       </Card>
@@ -106,7 +149,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   avatar: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.accent,
   },
   full_name: {
     fontFamily: 'Roboto',
@@ -147,10 +190,12 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 5,
   },
   likes: {
     fontFamily: 'Roboto',
     fontSize: 14,
     color: colors.bodyText,
+    marginLeft: 10,
   },
 });
