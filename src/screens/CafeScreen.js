@@ -1,5 +1,6 @@
+/* eslint-disable import/named */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
 import ImageHeader from '../components/ImageHeader';
@@ -10,25 +11,44 @@ import AspectRating from '../components/AspectRating';
 import FavouritesButton from '../components/FavouritesButton';
 import colors from '../config/colors';
 import ReviewsSection from '../components/ReviewsSection';
+import { fetchCafeInfo, fetchCafeList } from '../utility/CafeHelpers';
 
 export default function CafeScreen({ route }) {
   const { cafe } = route.params;
+  const [currentCafe, setCurrentCafe] = useState(cafe);
+
+  async function updateCafeInfo() {
+    // ? reason for getting all cafes instead of one is because
+    // ? the single cafe has different attributes for review objects
+    // ? and is also missing user_id attribute
+    const list = await fetchCafeList();
+    const thisCafe = list.filter((loc) => loc.location_id === cafe.location_id);
+    if (thisCafe) {
+      setCurrentCafe(thisCafe[0]);
+    }
+  }
+
+  useEffect(() => {
+    updateCafeInfo();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
-      <ImageHeader photoUri={cafe.photo_path} />
+      <ImageHeader photoUri={currentCafe.photo_path} />
       <View style={styles.info}>
         <View style={styles.title_row}>
-          <CafeTitle title={cafe.location_name} town={cafe.location_town} />
+          <CafeTitle
+            title={currentCafe.location_name}
+            town={currentCafe.location_town}
+          />
           <FavouritesButton />
         </View>
         <AverageStars
-          avg={cafe.avg_overall_rating}
-          total={cafe.location_reviews.length}
+          avg={currentCafe.avg_overall_rating}
+          total={currentCafe.location_reviews.length}
         />
         <Divider style={styles.divider} />
-
-        {/* <Divider style={styles.divider} /> */}
-        <ReviewsSection cafe={cafe} />
+        <ReviewsSection cafe={currentCafe} />
       </View>
     </ScrollView>
   );

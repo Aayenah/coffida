@@ -52,16 +52,6 @@ LikeButton.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  // button_container: {
-  //   width: 90,
-  // },
-  // button: {
-  //   backgroundColor: colors.accent,
-  //   height: 35,
-  // },
-  // text: {
-  //   color: 'white',
-  // },
   button_container: {
     width: 70,
   },

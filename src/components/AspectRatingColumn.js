@@ -37,7 +37,7 @@ export default function AspectRatingColumn({ cafe }) {
         <Rating
           readonly
           fractions={1}
-          startingValue={cafe.avg_cleanliness_rating}
+          startingValue={cafe.avg_clenliness_rating}
           type="star"
           imageSize={14}
           style={styles.stars}

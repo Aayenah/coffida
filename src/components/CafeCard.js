@@ -20,29 +20,9 @@ import * as RootNavigation from '../utility/RootNavigation';
 import { fetchCafeInfo } from '../utility/CafeHelpers';
 
 const windowWidth = Dimensions.get('window').width;
-export default function CafeCard({
-  // cafeId,
-  // cafeName,
-  // photo,
-  // avgOverallRating,
-  // avgQualityRating,
-  // avgPriceRating,
-  // avgCleanlinessRating,
-  // reviews,
-  // totalReviews,
-  cafe,
-}) {
+export default function CafeCard({ cafe }) {
   function goToCafeScreen() {
     RootNavigation.navigate('Cafe Screen', {
-      // cafeId,
-      // cafeName,
-      // photo,
-      // avgOverallRating,
-      // avgQualityRating,
-      // avgPriceRating,
-      // avgCleanlinessRating,
-      // reviews,
-      // totalReviews,
       cafe,
     });
   }

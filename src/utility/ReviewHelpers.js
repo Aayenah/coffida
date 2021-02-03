@@ -1,6 +1,8 @@
 /* eslint-disable import/named */
 import { BASE_URL } from './Endpoints';
 import { getUserTokenFromStorage } from './Authentication';
+import { reviewBodyFilter } from '../config/filters';
+import { isReviewBodyValid } from './InputValidator';
 
 async function likeReview(locationId, reviewId) {
   const token = await getUserTokenFromStorage();
@@ -44,4 +46,24 @@ async function unlikeReview(locationId, reviewId) {
   return res;
 }
 
-module.exports = { likeReview, unlikeReview };
+async function addNewReview(locationId, reviewObj) {
+  const token = await getUserTokenFromStorage();
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Authorization': token,
+    },
+    body: JSON.stringify(reviewObj),
+  };
+
+  let res = null;
+  try {
+    res = await fetch(`${BASE_URL}/location/${locationId}/review`, options);
+  } catch (err) {
+    console.log('ERROR! addNewReview: ', err);
+  }
+  return res;
+}
+
+module.exports = { likeReview, unlikeReview, addNewReview };

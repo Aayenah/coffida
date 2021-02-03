@@ -11,20 +11,26 @@ import { likeReview, unlikeReview } from '../utility/ReviewHelpers';
 
 export default function CafeReview({ review }) {
   const [reviewer, setReviewer] = useState(null);
-  const [likedReviews, setLikedReviews] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
+  const [isOwned, setIsOwned] = useState(false);
   const [likes, setLikes] = useState(review.likes);
   const [initials, setInitials] = useState('-');
   const fullName = `${reviewer?.first_name} ${reviewer?.last_name}`;
   const reviewCount = reviewer ? reviewer.reviews.length : 0;
-  const reviewCountString = `${reviewCount} Reviews`;
-  const likesString = `${review.likes} likes`;
+  const reviewCountString =
+    reviewCount === 1
+      ? `  (${reviewCount} Review)`
+      : `  (${reviewCount} Reviews)`;
 
   async function prepareUserInfo() {
     const data = await getUserInfo(review.review_user_id);
     setReviewer(data);
     if (data) {
-      setInitials(`${data.first_name.charAt(0)}${data.last_name.charAt(0)}`);
+      setInitials(
+        `${data.first_name.charAt(0).toUpperCase()}${data.last_name
+          .charAt(0)
+          .toUpperCase()}`,
+      );
     } else {
       setInitials('-');
     }
@@ -37,10 +43,24 @@ export default function CafeReview({ review }) {
       const reviewLiked = user.liked_reviews.some(
         (r) => r.review.review_id === review.review_id,
       );
-      console.log(
-        `reviewId: ${review.review_id} liked by ${user.email}? ${reviewLiked}`,
-      );
+      // console.log(
+      //   `reviewId: ${review.review_id} liked by ${user.email}? ${reviewLiked}`,
+      // );
       setIsLiked(reviewLiked);
+    }
+  }
+
+  async function checkOwnedReviews() {
+    const id = await getUserIdFromStorage();
+    const user = await getUserInfo(id);
+    if (user) {
+      const reviewOwned = user.reviews.some(
+        (r) => r.review.review_id === review.review_id,
+      );
+      // console.log(
+      //   `reviewId: ${review.review_id} owned by ${user.email}? ${reviewOwned}`,
+      // );
+      setIsOwned(reviewOwned);
     }
   }
 
@@ -70,6 +90,7 @@ export default function CafeReview({ review }) {
   useEffect(() => {
     prepareUserInfo();
     checkLikedReviews();
+    checkOwnedReviews();
   }, []);
 
   return (
@@ -85,8 +106,8 @@ export default function CafeReview({ review }) {
             containerStyle={styles.avatar}
           />
           <Text style={styles.full_name}>{fullName}</Text>
-          <Text style={styles.full_name}>{review.review_id}</Text>
           <Text style={styles.review_count}>{reviewCountString}</Text>
+          {/* <Text style={styles.full_name}>{review.review_id}</Text> */}
         </View>
         <View style={styles.body}>
           <View style={styles.stars_row}>
@@ -149,7 +170,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   avatar: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.primary,
   },
   full_name: {
     fontFamily: 'Roboto',
@@ -160,7 +181,7 @@ const styles = StyleSheet.create({
   review_count: {
     fontFamily: 'Roboto',
     fontSize: 12,
-    marginLeft: 'auto',
+    // marginLeft: 'auto',
     color: colors.bodyText,
   },
   body: {

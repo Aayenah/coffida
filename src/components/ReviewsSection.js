@@ -7,6 +7,7 @@ import colors from '../config/colors';
 import CafeReview from './CafeReview';
 import AspectRatingColumn from './AspectRatingColumn';
 import * as RootNavigation from '../utility/RootNavigation';
+import AddReviewButton from './AddReviewButton';
 
 export default function ReviewsSection({ cafe }) {
   let totalReviews = '';
@@ -22,11 +23,17 @@ export default function ReviewsSection({ cafe }) {
     RootNavigation.navigate('Reviews Screen', { cafe });
   }
 
+  function onAdd() {
+    RootNavigation.navigate('Add Review Screen', { cafe });
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Reviews</Text>
       <Text style={styles.subtitle}>Overall</Text>
-      <Text style={styles.avg_number}>{cafe.avg_overall_rating}</Text>
+      <Text style={styles.avg_number}>
+        {cafe.avg_overall_rating.toFixed(1)}
+      </Text>
       <View style={styles.stars_row}>
         <Rating
           readonly
@@ -62,7 +69,9 @@ export default function ReviewsSection({ cafe }) {
         }
         onPress={goToAllReviews}
       />
-      {/* <View style={styles.reviews}>{reviewsList}</View> */}
+      <View style={styles.add_row}>
+        <AddReviewButton onAdd={onAdd} />
+      </View>
     </View>
   );
 }
@@ -104,9 +113,7 @@ const styles = StyleSheet.create({
   },
   stars_row: {
     flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // backgroundColor: 'pink',
+    alignItems: 'center',
     marginBottom: 20,
   },
   review_count: {
@@ -139,5 +146,10 @@ const styles = StyleSheet.create({
     borderColor: colors.secondary,
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  add_row: {
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 20,
   },
 });

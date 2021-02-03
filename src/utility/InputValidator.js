@@ -1,4 +1,6 @@
 /* eslint-disable no-useless-escape */
+import { reviewBodyFilter } from '../config/filters';
+
 const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 const nameRegex = /^[a-zA-Z]+( [a-zA-Z]+)*$/;
 
@@ -22,4 +24,36 @@ function isPasswordValid(password) {
   return true;
 }
 
-module.exports = { isEmailValid, isNameValid, isPasswordValid };
+function isReviewBodyValid(body) {
+  const MIN_LENGTH = 3;
+  const result = {
+    valid: true,
+    message: '',
+  };
+
+  if (!body) {
+    result.valid = false;
+    result.message = 'Review cannot be empty';
+  }
+  if (body.length < MIN_LENGTH) {
+    result.valid = false;
+    result.message = `Review must be at least ${MIN_LENGTH} characters long`;
+  }
+
+  const words = body.toLowerCase().split(' ');
+  words.forEach((w) => {
+    if (reviewBodyFilter.includes(w)) {
+      result.valid = false;
+      result.message = `Review cannot contain the words ${reviewBodyFilter}`;
+    }
+  });
+
+  return result;
+}
+
+module.exports = {
+  isEmailValid,
+  isNameValid,
+  isPasswordValid,
+  isReviewBodyValid,
+};

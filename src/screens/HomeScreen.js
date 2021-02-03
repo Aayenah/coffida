@@ -59,9 +59,12 @@ export default function HomeScreen() {
       <View style={styles.container}>
         {currentCoord === null ? (
           <View>
-            <Carousel title="Top Rated" items={topRatedCafes} />
+            {/* <Carousel title="Top Rated" items={topRatedCafes} />
             <Carousel title="High Quality" items={highQualityCafes} />
-            <Carousel title="Best Prices" items={bestPricesCafes} />
+            <Carousel title="Best Prices" items={bestPricesCafes} /> */}
+            <Carousel title="Top Rated" items={cafes} />
+            <Carousel title="High Quality" items={cafes} />
+            <Carousel title="Best Prices" items={cafes} />
           </View>
         ) : (
           <View>

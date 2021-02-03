@@ -171,7 +171,7 @@ const getUserInfo = async (id) => {
     const res = await fetch(`${BASE_URL}${GET_USER}/${id}`, options);
     if (res.ok) {
       user = await res.json();
-      console.log(`getUserInfo: ${user.email}`);
+      // console.log(`getUserInfo: ${user.email}`);
     }
   } catch (err) {
     console.log(`login function: ${err}`);
