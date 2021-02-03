@@ -3,11 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import CafeReview from '../components/CafeReview';
+import LoadingScreen from './LoadingScreen';
 import { fetchCafeList } from '../utility/CafeHelpers';
 
 export default function ReviewsScreen({ route }) {
   const { cafe } = route.params;
   const [currentCafe, setCurrentCafe] = useState(cafe);
+  const [loading, setLoading] = useState(false);
 
   async function updateCafeInfo() {
     // ? reason for getting all cafes instead of one is because
@@ -21,8 +23,14 @@ export default function ReviewsScreen({ route }) {
   }
 
   useEffect(() => {
+    setLoading(true);
     updateCafeInfo();
+    setLoading(false);
   }, []);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   const reviewsList = currentCafe.location_reviews.map((r) => (
     <CafeReview key={r.review_id} review={r} />

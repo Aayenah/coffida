@@ -1,8 +1,9 @@
 import React from 'react';
 import { Icon, Button } from 'react-native-elements';
+import PropTypes from 'prop-types';
 import colors from '../config/colors';
 
-export default function FavouritesButton() {
+export default function FavouritesButton({ isFav, onFav }) {
   return (
     <Icon
       name="heart"
@@ -10,8 +11,13 @@ export default function FavouritesButton() {
       color={colors.primary}
       size={20}
       raised
-      style={{ margin: 0 }}
-      onPress={() => console.log('fav')}
+      solid={isFav}
+      onPress={onFav}
     />
   );
 }
+
+FavouritesButton.propTypes = {
+  isFav: PropTypes.bool.isRequired,
+  onFav: PropTypes.func.isRequired,
+};

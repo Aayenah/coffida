@@ -37,4 +37,45 @@ async function fetchCafeList() {
   return cafes;
 }
 
-module.exports = { fetchCafeInfo, fetchCafeList };
+async function addToFavourites(locationId) {
+  const token = await getUserTokenFromStorage();
+  const options = {
+    method: 'POST',
+    headers: {
+      'X-Authorization': token,
+    },
+  };
+
+  let res = null;
+  try {
+    res = await fetch(`${BASE_URL}/location/${locationId}/favourite`, options);
+  } catch (err) {
+    console.log('ERROR! addToFavourites: ', err);
+  }
+  return res;
+}
+
+async function removeFromFavourites(locationId) {
+  const token = await getUserTokenFromStorage();
+  const options = {
+    method: 'DELETE',
+    headers: {
+      'X-Authorization': token,
+    },
+  };
+
+  let res = null;
+  try {
+    res = await fetch(`${BASE_URL}/location/${locationId}/favourite`, options);
+  } catch (err) {
+    console.log('ERROR! addToFavourites: ', err);
+  }
+  return res;
+}
+
+module.exports = {
+  fetchCafeInfo,
+  fetchCafeList,
+  addToFavourites,
+  removeFromFavourites,
+};

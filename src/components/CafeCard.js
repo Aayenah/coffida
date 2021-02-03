@@ -31,14 +31,16 @@ export default function CafeCard({ cafe }) {
     <TouchableWithoutFeedback onPress={goToCafeScreen}>
       <Card containerStyle={styles.card}>
         <ImageBackground source={{ uri: cafe.photo_path }} style={styles.img}>
-          <FavouritesButton />
+          {/* <FavouritesButton /> */}
         </ImageBackground>
         <View style={styles.body}>
-          <View style={styles.titleRow}>
+          <View style={styles.title_row}>
             <Text style={styles.cafeName}>{cafe.location_name}</Text>
+            <Text> - </Text>
+            <Text style={styles.town}>{cafe.location_town}</Text>
             {/* <Text style={styles.cafeName}>{cafeId}</Text> */}
             {/* {distance > 0 ? <Distance miles={distance} /> : <Text>-</Text>} */}
-            <Distance miles={0} />
+            {/* <Distance miles={0} /> */}
           </View>
           <AverageStars
             avg={cafe.avg_overall_rating}
@@ -59,15 +61,6 @@ export default function CafeCard({ cafe }) {
 }
 
 CafeCard.propTypes = {
-  // cafeId: PropTypes.number.isRequired,
-  // cafeName: PropTypes.string.isRequired,
-  // photo: PropTypes.string.isRequired,
-  // avgOverallRating: PropTypes.number.isRequired,
-  // avgQualityRating: PropTypes.number.isRequired,
-  // avgPriceRating: PropTypes.number.isRequired,
-  // avgCleanlinessRating: PropTypes.number.isRequired,
-  // reviews: PropTypes.arrayOf(PropTypes.object).isRequired,
-  // totalReviews: PropTypes.number.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   cafe: PropTypes.object.isRequired,
 };
@@ -75,7 +68,7 @@ CafeCard.propTypes = {
 const styles = StyleSheet.create({
   card: {
     width: windowWidth * 0.8,
-    height: 240,
+    height: 250,
     padding: 0,
     margin: 0,
     marginRight: 5,
@@ -94,14 +87,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  town: {},
   body: {
     height: '100%',
     paddingHorizontal: 10,
     paddingVertical: 2,
   },
-  titleRow: {
+  title_row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
+    alignItems: 'center',
   },
   aspectRow: {
     flexDirection: 'row',

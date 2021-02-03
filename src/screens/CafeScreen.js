@@ -11,11 +11,16 @@ import AspectRating from '../components/AspectRating';
 import FavouritesButton from '../components/FavouritesButton';
 import colors from '../config/colors';
 import ReviewsSection from '../components/ReviewsSection';
-import { fetchCafeInfo, fetchCafeList } from '../utility/CafeHelpers';
+import {
+  addToFavourites,
+  removeFromFavourites,
+  fetchCafeList,
+} from '../utility/CafeHelpers';
 
 export default function CafeScreen({ route }) {
   const { cafe } = route.params;
   const [currentCafe, setCurrentCafe] = useState(cafe);
+  const [isFav, setIsFav] = useState(false);
 
   async function updateCafeInfo() {
     // ? reason for getting all cafes instead of one is because
@@ -25,6 +30,24 @@ export default function CafeScreen({ route }) {
     const thisCafe = list.filter((loc) => loc.location_id === cafe.location_id);
     if (thisCafe) {
       setCurrentCafe(thisCafe[0]);
+    }
+  }
+
+  async function onFav() {
+    if (isFav) {
+      const res = await removeFromFavourites(cafe.location_id);
+      if (res.ok) {
+        setIsFav(false);
+      } else {
+        console.log('failed to UN-FAVOURITE cafe ', res);
+      }
+    } else {
+      const res = await addToFavourites(cafe.location_id);
+      if (res.ok) {
+        setIsFav(true);
+      } else {
+        console.log('failed to FAVOURITE cafe ', res);
+      }
     }
   }
 
@@ -41,7 +64,7 @@ export default function CafeScreen({ route }) {
             title={currentCafe.location_name}
             town={currentCafe.location_town}
           />
-          <FavouritesButton />
+          <FavouritesButton isFav={isFav} onFav={onFav} />
         </View>
         <AverageStars
           avg={currentCafe.avg_overall_rating}

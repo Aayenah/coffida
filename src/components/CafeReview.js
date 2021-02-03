@@ -2,6 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { Card, Avatar, Rating } from 'react-native-elements';
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
 import AspectRating from './AspectRating';
@@ -13,6 +19,7 @@ export default function CafeReview({ review }) {
   const [reviewer, setReviewer] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isOwned, setIsOwned] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [likes, setLikes] = useState(review.likes);
   const [initials, setInitials] = useState('-');
   const fullName = `${reviewer?.first_name} ${reviewer?.last_name}`;
@@ -23,6 +30,7 @@ export default function CafeReview({ review }) {
       : `  (${reviewCount} Reviews)`;
 
   async function prepareUserInfo() {
+    setLoading(true);
     const data = await getUserInfo(review.review_user_id);
     setReviewer(data);
     if (data) {
@@ -61,6 +69,7 @@ export default function CafeReview({ review }) {
       //   `reviewId: ${review.review_id} owned by ${user.email}? ${reviewOwned}`,
       // );
       setIsOwned(reviewOwned);
+      setLoading(false);
     }
   }
 
@@ -92,6 +101,27 @@ export default function CafeReview({ review }) {
     checkLikedReviews();
     checkOwnedReviews();
   }, []);
+
+  if (loading) {
+    return (
+      <Card containerStyle={styles.card}>
+        <Placeholder
+          Animation={Fade}
+          Left={PlaceholderMedia}
+          style={{ marginBottom: 30 }}
+        >
+          <PlaceholderLine />
+          <PlaceholderLine width={30} />
+        </Placeholder>
+        <Placeholder Animation={Fade}>
+          <PlaceholderLine />
+          <PlaceholderLine />
+          <PlaceholderLine />
+          <PlaceholderLine width={30} />
+        </Placeholder>
+      </Card>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback>
