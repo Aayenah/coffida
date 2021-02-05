@@ -22,17 +22,6 @@ export default function CafeScreen({ route }) {
   const [currentCafe, setCurrentCafe] = useState(cafe);
   const [isFav, setIsFav] = useState(false);
 
-  async function updateCafeInfo() {
-    // ? reason for getting all cafes instead of one is because
-    // ? the single cafe has different attributes for review objects
-    // ? and is also missing user_id attribute
-    const list = await fetchCafeList();
-    const thisCafe = list.filter((loc) => loc.location_id === cafe.location_id);
-    if (thisCafe) {
-      setCurrentCafe(thisCafe[0]);
-    }
-  }
-
   async function onFav() {
     if (isFav) {
       const res = await removeFromFavourites(cafe.location_id);
@@ -52,6 +41,15 @@ export default function CafeScreen({ route }) {
   }
 
   useEffect(() => {
+    async function updateCafeInfo() {
+      const list = await fetchCafeList();
+      const thisCafe = list.filter(
+        (loc) => loc.location_id === cafe.location_id,
+      );
+      if (thisCafe) {
+        setCurrentCafe(thisCafe[0]);
+      }
+    }
     updateCafeInfo();
   }, []);
 

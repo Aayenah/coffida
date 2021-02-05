@@ -5,8 +5,7 @@
 [X] Filter cafe list by high overall rating
 [X] Filter cafe list by high quality rating
 [X] Filter cafe list by high price rating
-[ ] Favourite/Unfavourite cafe from carousel
-[ ] Favourite/Unfavourite cafe from cafe screen
+[X] Favourite/Unfavourite cafe from cafe screen
 [ ] Filter cafe list by nearby cafes
 [ ] Setup geolocation
   [X] Ask user for permissions
@@ -36,12 +35,14 @@
   [X] Show overall and aspect ratings
   [X] Add button to show all reviews
 [X] Setup review screen
-  [ ] Allow user to add a review
+  [X] Allow user to add a review
+  [X] Update cafe screen after adding new review
   [ ] Setup review component
     [X] Show reviewer's avatar, name and total reviews
     [X] Show star rating
     [X] Show aspect ratings
     [X] Show review body
+    [X] Show photo carousel if it has photo
     [X] Add like button and like count
     [X] Show if review is already liked or not
     [ ] Allow user to edit owned reviews

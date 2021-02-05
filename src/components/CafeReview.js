@@ -1,7 +1,7 @@
 /* eslint-disable import/named */
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import { Card, Avatar, Rating } from 'react-native-elements';
+import { Card, Avatar, Rating, Button } from 'react-native-elements';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -14,6 +14,8 @@ import AspectRating from './AspectRating';
 import LikeButton from './LikeButton';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
 import { likeReview, unlikeReview } from '../utility/ReviewHelpers';
+import AddPhotoButton from './AddPhotoButton';
+import * as RootNavigation from '../utility/RootNavigation';
 
 export default function CafeReview({ review }) {
   const [reviewer, setReviewer] = useState(null);
@@ -29,8 +31,8 @@ export default function CafeReview({ review }) {
       ? `  (${reviewCount} Review)`
       : `  (${reviewCount} Reviews)`;
 
-  async function prepareUserInfo() {
-    setLoading(true);
+  async function getReviewOwner() {
+    // setLoading(true);
     const data = await getUserInfo(review.review_user_id);
     setReviewer(data);
     if (data) {
@@ -69,7 +71,7 @@ export default function CafeReview({ review }) {
       //   `reviewId: ${review.review_id} owned by ${user.email}? ${reviewOwned}`,
       // );
       setIsOwned(reviewOwned);
-      setLoading(false);
+      // setLoading(false);
     }
   }
 
@@ -96,15 +98,24 @@ export default function CafeReview({ review }) {
     }
   }
 
+  function openCameraView() {
+    RootNavigation.navigate('Camera View', { review });
+  }
+
   useEffect(() => {
-    prepareUserInfo();
-    checkLikedReviews();
-    checkOwnedReviews();
+    async function prepareComponent() {
+      setLoading(true);
+      await getReviewOwner();
+      await checkLikedReviews();
+      await checkOwnedReviews();
+      setLoading(false);
+    }
+    prepareComponent();
   }, []);
 
   if (loading) {
     return (
-      <Card containerStyle={styles.card}>
+      <Card containerStyle={styles.placeholder_card}>
         <Placeholder
           Animation={Fade}
           Left={PlaceholderMedia}
@@ -131,13 +142,15 @@ export default function CafeReview({ review }) {
             size="medium"
             title={initials}
             rounded
-            onPress={() => console.log('Works!')}
             activeOpacity={0.7}
             containerStyle={styles.avatar}
           />
           <Text style={styles.full_name}>{fullName}</Text>
           <Text style={styles.review_count}>{reviewCountString}</Text>
-          {/* <Text style={styles.full_name}>{review.review_id}</Text> */}
+          <Text style={styles.menu}>{review.review_id}</Text>
+          <View style={styles.controls}>
+            <AddPhotoButton openCameraView={openCameraView} />
+          </View>
         </View>
         <View style={styles.body}>
           <View style={styles.stars_row}>
@@ -153,7 +166,6 @@ export default function CafeReview({ review }) {
               imageSize={24}
               style={styles.stars}
             />
-            {/* <Text style={styles.review_count}>{totalReviews}</Text> */}
           </View>
           <View style={styles.aspect_row}>
             <AspectRating
@@ -167,11 +179,17 @@ export default function CafeReview({ review }) {
             />
           </View>
           <Card.Divider />
+
           <Text style={styles.review_text}>{review.review_body}</Text>
           <Card.Divider style={{ marginBottom: 0 }} />
           <View style={styles.footer}>
             <LikeButton isLiked={isLiked} onLike={onLike} />
             <Text style={styles.likes}>{`${likes} likes`}</Text>
+            {/* <Button
+              title="Photo"
+              raised
+              onPress={() => RootNavigation.navigate('Camera View', { review })}
+            /> */}
           </View>
         </View>
       </Card>
@@ -187,7 +205,14 @@ CafeReview.propTypes = {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    // height: 240,
+    padding: 0,
+    marginHorizontal: 0,
+    marginVertical: 10,
+    paddingTop: 2,
+  },
+  placeholder_card: {
+    width: '100%',
+    height: 240,
     padding: 0,
     marginHorizontal: 0,
     marginVertical: 10,
@@ -213,6 +238,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     // marginLeft: 'auto',
     color: colors.bodyText,
+  },
+  controls: {
+    marginLeft: 'auto',
   },
   body: {
     // height: '100%',

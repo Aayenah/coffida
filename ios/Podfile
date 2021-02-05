@@ -12,6 +12,8 @@ target 'coffiDa' do
 
   pod 'react-native-location', :path => '../node_modules/react-native-location'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
   target 'coffiDaTests' do
     inherit! :complete
     # Pods for testing

@@ -39,14 +39,13 @@ export default function HomeScreen() {
   const bestPricesCafes = cafes.filter((c) => c.avg_price_rating >= MIN_PRICE);
   // let nearbyCafes = cafes.filter((c) => c.distance_from_user < 100);
 
-  async function prepareData() {
-    setLoading(true);
-    const cafeList = await fetchCafeList();
-    setCafes(cafeList);
-    setLoading(false);
-  }
-
   useEffect(() => {
+    async function prepareData() {
+      setLoading(true);
+      const cafeList = await fetchCafeList();
+      setCafes(cafeList);
+      setLoading(false);
+    }
     prepareData();
   }, []);
 

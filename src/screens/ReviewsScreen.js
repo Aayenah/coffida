@@ -11,21 +11,19 @@ export default function ReviewsScreen({ route }) {
   const [currentCafe, setCurrentCafe] = useState(cafe);
   const [loading, setLoading] = useState(false);
 
-  async function updateCafeInfo() {
-    // ? reason for getting all cafes instead of one is because
-    // ? the single cafe has different attributes for review objects
-    // ? and is also missing user_id attribute
-    const list = await fetchCafeList();
-    const thisCafe = list.filter((loc) => loc.location_id === cafe.location_id);
-    if (thisCafe) {
-      setCurrentCafe(thisCafe[0]);
-    }
-  }
-
   useEffect(() => {
-    setLoading(true);
+    async function updateCafeInfo() {
+      setLoading(true);
+      const list = await fetchCafeList();
+      const thisCafe = list.filter(
+        (loc) => loc.location_id === cafe.location_id,
+      );
+      if (thisCafe) {
+        setCurrentCafe(thisCafe[0]);
+        setLoading(false);
+      }
+    }
     updateCafeInfo();
-    setLoading(false);
   }, []);
 
   if (loading) {

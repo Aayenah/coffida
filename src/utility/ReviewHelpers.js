@@ -66,4 +66,27 @@ async function addNewReview(locationId, reviewObj) {
   return res;
 }
 
-module.exports = { likeReview, unlikeReview, addNewReview };
+async function addPhotoToReview(locationId, reviewId, data) {
+  const token = await getUserTokenFromStorage();
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'image/jpeg',
+      'X-Authorization': token,
+    },
+    body: data,
+  };
+
+  let res = null;
+  try {
+    res = await fetch(
+      `${BASE_URL}/location/${locationId}/review/${reviewId}/photo`,
+      options,
+    );
+  } catch (err) {
+    console.log('ERROR! addPhotoToReview: ', err);
+  }
+  return res;
+}
+
+module.exports = { likeReview, unlikeReview, addNewReview, addPhotoToReview };
