@@ -1,14 +1,18 @@
 /* eslint-disable import/named */
 /* eslint-disable react/prop-types */
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { RNCamera } from 'react-native-camera';
 import { addPhotoToReview } from '../utility/ReviewHelpers';
+import colors from '../config/colors';
 
-export default function CameraView({ route }) {
+export default function CameraView({ route, navigation }) {
   const { review } = route.params;
+  const [loading, setLoading] = useState(false);
 
   async function takePicture(camera) {
+    setLoading(true);
     const options = { quality: 0.5, base64: true };
     try {
       const data = await camera.takePictureAsync(options);
@@ -17,18 +21,25 @@ export default function CameraView({ route }) {
         review.review_id,
         data,
       );
-      // console.log(review);
-      console.log(res);
+
+      if (res.ok) {
+        navigation.navigate('Cafe Screen');
+      } else {
+        Alert.alert('Error', `Failed to add photo - ${res?.status}`);
+      }
     } catch (err) {
-      console.log('failed to take picture: ', err);
+      Alert.alert('Error', `Failed to take picture - ${err}`);
     }
+    setLoading(false);
   }
+
+  // useEffect(() => {}, []);
 
   const PendingView = () => (
     <View
       style={{
         flex: 1,
-        backgroundColor: 'lightgreen',
+        backgroundColor: 'grey',
         justifyContent: 'center',
         alignItems: 'center',
       }}
@@ -51,7 +62,7 @@ export default function CameraView({ route }) {
           buttonNegative: 'Cancel',
         }}
       >
-        {({ camera, status, recordAudioPermissionStatus }) => {
+        {({ camera, status }) => {
           if (status !== 'READY') return <PendingView />;
           return (
             <View
@@ -61,12 +72,16 @@ export default function CameraView({ route }) {
                 justifyContent: 'center',
               }}
             >
-              <TouchableOpacity
+              <Icon
+                name="camera"
+                type="font-awesome-5"
+                color={colors.primary}
+                size={30}
+                raised
+                solid
+                disabled={loading}
                 onPress={() => takePicture(camera)}
-                style={styles.capture}
-              >
-                <Text style={{ fontSize: 14 }}> SNAP </Text>
-              </TouchableOpacity>
+              />
             </View>
           );
         }}

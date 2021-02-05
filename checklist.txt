@@ -46,9 +46,9 @@
     [X] Add like button and like count
     [X] Show if review is already liked or not
     [ ] Allow user to edit owned reviews
-    [ ] Allow user to delete owned reviews
+    [X] Allow user to delete owned reviews
     [ ] setup photo upload
-      [ ] Add photo to review owned by current user
+      [X] Add photo to review owned by current user
       [ ] Delete photo uploaded by user
 
 

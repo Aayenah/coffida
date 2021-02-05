@@ -1,7 +1,13 @@
 /* eslint-disable import/named */
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import { Card, Avatar, Rating, Button } from 'react-native-elements';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Alert,
+} from 'react-native';
+import { Card, Avatar, Rating } from 'react-native-elements';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -13,8 +19,15 @@ import colors from '../config/colors';
 import AspectRating from './AspectRating';
 import LikeButton from './LikeButton';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
-import { likeReview, unlikeReview } from '../utility/ReviewHelpers';
+import {
+  likeReview,
+  unlikeReview,
+  deleteReview,
+  getPhotoForReview,
+} from '../utility/ReviewHelpers';
 import AddPhotoButton from './AddPhotoButton';
+import DeleteReviewButton from './DeleteReviewButton';
+import UpdateReviewButton from './UpdateReviewButton';
 import * as RootNavigation from '../utility/RootNavigation';
 
 export default function CafeReview({ review }) {
@@ -22,6 +35,7 @@ export default function CafeReview({ review }) {
   const [isLiked, setIsLiked] = useState(false);
   const [isOwned, setIsOwned] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [imageData, setImageData] = useState(null);
   const [likes, setLikes] = useState(review.likes);
   const [initials, setInitials] = useState('-');
   const fullName = `${reviewer?.first_name} ${reviewer?.last_name}`;
@@ -32,7 +46,6 @@ export default function CafeReview({ review }) {
       : `  (${reviewCount} Reviews)`;
 
   async function getReviewOwner() {
-    // setLoading(true);
     const data = await getUserInfo(review.review_user_id);
     setReviewer(data);
     if (data) {
@@ -67,12 +80,15 @@ export default function CafeReview({ review }) {
       const reviewOwned = user.reviews.some(
         (r) => r.review.review_id === review.review_id,
       );
-      // console.log(
-      //   `reviewId: ${review.review_id} owned by ${user.email}? ${reviewOwned}`,
-      // );
       setIsOwned(reviewOwned);
-      // setLoading(false);
     }
+  }
+
+  async function checkReviewPhoto() {
+    const data = await getPhotoForReview(
+      review.review_location_id,
+      review.review_id,
+    );
   }
 
   async function onLike() {
@@ -102,12 +118,39 @@ export default function CafeReview({ review }) {
     RootNavigation.navigate('Camera View', { review });
   }
 
+  function onUpdateReview() {
+    RootNavigation.navigate('Update Review Screen', { review });
+  }
+
+  async function onDeleteReview() {
+    Alert.alert('Warning', 'Are you sure you want to delete this review?', [
+      {
+        text: 'No',
+      },
+      {
+        text: 'Yes',
+        onPress: async () => {
+          const res = await deleteReview(
+            review.review_location_id,
+            review.review_id,
+          );
+          if (res.ok) {
+            RootNavigation.goBack();
+          } else {
+            Alert.alert('Error', `Failed to delete review - ${res?.status}`);
+          }
+        },
+      },
+    ]);
+  }
+
   useEffect(() => {
     async function prepareComponent() {
       setLoading(true);
       await getReviewOwner();
       await checkLikedReviews();
       await checkOwnedReviews();
+      await checkReviewPhoto();
       setLoading(false);
     }
     prepareComponent();
@@ -148,9 +191,13 @@ export default function CafeReview({ review }) {
           <Text style={styles.full_name}>{fullName}</Text>
           <Text style={styles.review_count}>{reviewCountString}</Text>
           <Text style={styles.menu}>{review.review_id}</Text>
-          <View style={styles.controls}>
-            <AddPhotoButton openCameraView={openCameraView} />
-          </View>
+          {isOwned && (
+            <View style={styles.controls}>
+              <AddPhotoButton openCameraView={openCameraView} />
+              <DeleteReviewButton onDelete={onDeleteReview} />
+              <UpdateReviewButton onUpdate={onUpdateReview} />
+            </View>
+          )}
         </View>
         <View style={styles.body}>
           <View style={styles.stars_row}>
@@ -179,17 +226,11 @@ export default function CafeReview({ review }) {
             />
           </View>
           <Card.Divider />
-
           <Text style={styles.review_text}>{review.review_body}</Text>
           <Card.Divider style={{ marginBottom: 0 }} />
           <View style={styles.footer}>
             <LikeButton isLiked={isLiked} onLike={onLike} />
             <Text style={styles.likes}>{`${likes} likes`}</Text>
-            {/* <Button
-              title="Photo"
-              raised
-              onPress={() => RootNavigation.navigate('Camera View', { review })}
-            /> */}
           </View>
         </View>
       </Card>
@@ -236,14 +277,15 @@ const styles = StyleSheet.create({
   review_count: {
     fontFamily: 'Roboto',
     fontSize: 12,
-    // marginLeft: 'auto',
     color: colors.bodyText,
   },
   controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '20%',
     marginLeft: 'auto',
   },
   body: {
-    // height: '100%',
     paddingHorizontal: 10,
     paddingTop: 2,
   },

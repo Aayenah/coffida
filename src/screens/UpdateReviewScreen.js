@@ -7,30 +7,32 @@ import { Input, AirbnbRating } from 'react-native-elements';
 import colors from '../config/colors';
 import SubmitReviewButton from '../components/SubmitReviewButton';
 import { isReviewBodyValid } from '../utility/InputValidator';
-import { addNewReview } from '../utility/ReviewHelpers';
+import { updateReview } from '../utility/ReviewHelpers';
 
-export default function AddReviewScreen({ route, navigation }) {
-  const [cafe, setCafe] = useState(route.params.cafe);
-  const [overall, setOverall] = useState(5);
-  const [quality, setQuality] = useState(5);
-  const [price, setPrice] = useState(5);
-  const [cleanliness, setCleanliness] = useState(5);
-  const [body, setBody] = useState('');
+export default function UpdateReviewScreen({ route, navigation }) {
+  const [review, setReview] = useState(route.params.review);
+  const [overall, setOverall] = useState(review.review_overallrating);
+  const [quality, setQuality] = useState(review.review_qualityrating);
+  const [price, setPrice] = useState(review.review_pricerating);
+  const [cleanliness, setCleanliness] = useState(
+    review.review_clenlinessrating,
+  );
+  const [body, setBody] = useState(review.review_body);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    setOverall(5);
-    setQuality(5);
-    setPrice(5);
-    setCleanliness(5);
-    setBody('');
+    setOverall(review.review_overallrating);
+    setQuality(review.review_qualityrating);
+    setPrice(review.review_pricerating);
+    setCleanliness(review.review_clenlinessrating);
+    setBody(review.review_body);
     setError('');
     setMessage('');
   }, []);
 
   // eslint-disable-next-line consistent-return
-  async function onSubmitReview() {
+  async function onSubmitUpdate() {
     setError('');
     setMessage('');
     if (!isReviewBodyValid(body).valid) {
@@ -45,11 +47,17 @@ export default function AddReviewScreen({ route, navigation }) {
       review_body: body,
     };
 
-    const res = await addNewReview(cafe.location_id, reviewObj);
+    const res = await updateReview(
+      review.review_location_id,
+      review.review_id,
+      reviewObj,
+    );
+
     if (res.ok) {
       navigation.navigate('Cafe Screen');
     } else {
-      Alert.alert('Error', `Failed to add review - ${res?.status}`);
+      setError(`Failed to update review - ${res?.status}`);
+      Alert.alert('Error', `Failed to update review - ${res?.status}`);
     }
   }
 
@@ -110,7 +118,7 @@ export default function AddReviewScreen({ route, navigation }) {
         />
       </View>
       <View style={styles.submit_row}>
-        <SubmitReviewButton onSubmit={onSubmitReview} />
+        <SubmitReviewButton onSubmit={onSubmitUpdate} />
       </View>
     </ScrollView>
   );

@@ -8,8 +8,8 @@ export default function AddPhotoButton({ openCameraView }) {
     <Icon
       name="camera"
       type="font-awesome-5"
-      color={colors.primary}
-      size={20}
+      color={colors.secondary}
+      size={16}
       onPress={openCameraView}
     />
   );

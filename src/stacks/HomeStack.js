@@ -4,6 +4,7 @@ import HomeScreen from '../screens/HomeScreen';
 import CafeScreen from '../screens/CafeScreen';
 import ReviewsScreen from '../screens/ReviewsScreen';
 import AddReviewScreen from '../screens/AddReviewScreen';
+import UpdateReviewScreen from '../screens/UpdateReviewScreen';
 import CameraView from '../components/CameraView';
 
 const Stack = createStackNavigator();
@@ -37,6 +38,11 @@ export default function HomeStack() {
         name="Add Review Screen"
         component={AddReviewScreen}
         options={{ title: 'Add Review' }}
+      />
+      <Stack.Screen
+        name="Update Review Screen"
+        component={UpdateReviewScreen}
+        options={{ title: 'Update Review' }}
       />
     </Stack.Navigator>
   );
