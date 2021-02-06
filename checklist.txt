@@ -45,11 +45,12 @@
     [X] Show photo carousel if it has photo
     [X] Add like button and like count
     [X] Show if review is already liked or not
-    [ ] Allow user to edit owned reviews
+    [X] Allow user to edit owned reviews
     [X] Allow user to delete owned reviews
-    [ ] setup photo upload
+    [X] setup photo feature
       [X] Add photo to review owned by current user
-      [ ] Delete photo uploaded by user
+      [X] View review photo
+      [X] Delete own photo
 
 
 

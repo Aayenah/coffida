@@ -1,13 +1,12 @@
 /* eslint-disable import/named */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
+import Toast from 'react-native-simple-toast';
 import ImageHeader from '../components/ImageHeader';
 import CafeTitle from '../components/CafeTitle';
 import AverageStars from '../components/AverageStars';
-import Distance from '../components/Distance';
-import AspectRating from '../components/AspectRating';
 import FavouritesButton from '../components/FavouritesButton';
 import colors from '../config/colors';
 import ReviewsSection from '../components/ReviewsSection';
@@ -16,6 +15,7 @@ import {
   removeFromFavourites,
   fetchCafeList,
 } from '../utility/CafeHelpers';
+import { getUserIdFromStorage, getUserInfo } from '../utility/Authentication';
 
 export default function CafeScreen({ route }) {
   const { cafe } = route.params;
@@ -27,30 +27,44 @@ export default function CafeScreen({ route }) {
       const res = await removeFromFavourites(cafe.location_id);
       if (res.ok) {
         setIsFav(false);
+        Toast.show('Removed from favourites');
       } else {
-        console.log('failed to UN-FAVOURITE cafe ', res);
+        Toast.show(`Failed to remove from favourites cafe - ${res?.status}`);
       }
     } else {
       const res = await addToFavourites(cafe.location_id);
       if (res.ok) {
         setIsFav(true);
+        Toast.show('Added to favourites');
       } else {
-        console.log('failed to FAVOURITE cafe ', res);
+        Toast.show(`Failed to add to favourites cafe - ${res?.status}`);
       }
     }
   }
 
+  async function checkFavourites() {
+    const id = await getUserIdFromStorage();
+    const user = await getUserInfo(id);
+    if (user) {
+      const isFavourite = user.favourite_locations.some(
+        (loc) => loc.location_id === cafe.location_id,
+      );
+      setIsFav(isFavourite);
+    }
+  }
+
   useEffect(() => {
-    async function updateCafeInfo() {
+    async function prepareComponent() {
       const list = await fetchCafeList();
       const thisCafe = list.filter(
         (loc) => loc.location_id === cafe.location_id,
       );
       if (thisCafe) {
         setCurrentCafe(thisCafe[0]);
+        await checkFavourites();
       }
     }
-    updateCafeInfo();
+    prepareComponent();
   }, []);
 
   return (

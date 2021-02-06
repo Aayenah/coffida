@@ -148,12 +148,30 @@ async function getPhotoForReview(locationId, reviewId) {
       `${BASE_URL}/location/${locationId}/review/${reviewId}/photo`,
       options,
     );
-    const blob = await res.blob();
-    const image = URL.createObjectURL(blob);
-    console.log(image);
-    // console.log('b ', b);
   } catch (err) {
     console.log('ERROR! getPhotoForReview: ', err);
+  }
+  return res;
+}
+
+async function deletePhotoFromReview(locationId, reviewId) {
+  const token = await getUserTokenFromStorage();
+  const options = {
+    method: 'DELETE',
+    headers: {
+      'X-Authorization': token,
+    },
+  };
+
+  let res = null;
+  try {
+    res = await fetch(
+      `${BASE_URL}/location/${locationId}/review/${reviewId}/photo`,
+      options,
+    );
+    console.log(res);
+  } catch (err) {
+    console.log('ERROR! deletePhotoFromReview: ', err);
   }
   return res;
 }
@@ -166,4 +184,5 @@ module.exports = {
   deleteReview,
   addPhotoToReview,
   getPhotoForReview,
+  deletePhotoFromReview,
 };

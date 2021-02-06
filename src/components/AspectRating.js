@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import colors from '../config/colors';
 
 export default function AspectRating({ aspect, rating }) {
-  const info = rating < 1 ? '-' : `${rating}`;
+  const info = rating < 1 ? '-' : `${rating.toFixed(1)}`;
   return (
     <View style={styles.container}>
       <Text style={styles.aspect}>{aspect}</Text>

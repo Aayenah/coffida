@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
-import { Card, Avatar, Rating } from 'react-native-elements';
+import { Card, Avatar, Rating, Image } from 'react-native-elements';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 import colors from '../config/colors';
 import AspectRating from './AspectRating';
 import LikeButton from './LikeButton';
+import PhotoModal from './PhotoModal';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
 import {
   likeReview,
@@ -36,6 +37,7 @@ export default function CafeReview({ review }) {
   const [isOwned, setIsOwned] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imageData, setImageData] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [likes, setLikes] = useState(review.likes);
   const [initials, setInitials] = useState('-');
   const fullName = `${reviewer?.first_name} ${reviewer?.last_name}`;
@@ -89,6 +91,7 @@ export default function CafeReview({ review }) {
       review.review_location_id,
       review.review_id,
     );
+    setImageData(data);
   }
 
   async function onLike() {
@@ -227,6 +230,22 @@ export default function CafeReview({ review }) {
           </View>
           <Card.Divider />
           <Text style={styles.review_text}>{review.review_body}</Text>
+          {imageData?.ok && (
+            <View>
+              <Image
+                source={{ uri: imageData.url }}
+                style={{ width: '100%', height: 200 }}
+                resizeMode="contain"
+                onPress={() =>
+                  // eslint-disable-next-line implicit-arrow-linebreak
+                  RootNavigation.navigate('Photo View', {
+                    url: imageData.url,
+                    review,
+                  })
+                }
+              />
+            </View>
+          )}
           <Card.Divider style={{ marginBottom: 0 }} />
           <View style={styles.footer}>
             <LikeButton isLiked={isLiked} onLike={onLike} />
