@@ -169,7 +169,6 @@ async function deletePhotoFromReview(locationId, reviewId) {
       `${BASE_URL}/location/${locationId}/review/${reviewId}/photo`,
       options,
     );
-    console.log(res);
   } catch (err) {
     console.log('ERROR! deletePhotoFromReview: ', err);
   }

@@ -37,7 +37,7 @@
 [X] Setup review screen
   [X] Allow user to add a review
   [X] Update cafe screen after adding new review
-  [ ] Setup review component
+  [X] Setup review component
     [X] Show reviewer's avatar, name and total reviews
     [X] Show star rating
     [X] Show aspect ratings

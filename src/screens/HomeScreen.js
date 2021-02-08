@@ -57,6 +57,7 @@ export default function HomeScreen() {
     <ScrollView style={{ backgroundColor: 'white' }}>
       <View style={styles.container}>
         <View>
+          <Carousel title="All Cafes" items={cafes} />
           {topRatedCafes.length > 0 && (
             <Carousel title="Top Rated" items={topRatedCafes} />
           )}

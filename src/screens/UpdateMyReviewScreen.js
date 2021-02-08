@@ -9,9 +9,9 @@ import SubmitReviewButton from '../components/SubmitReviewButton';
 import { isReviewBodyValid } from '../utility/InputValidator';
 import { updateReview } from '../utility/ReviewHelpers';
 
-export default function UpdateReviewScreen({ route, navigation }) {
+export default function UpdateMyReviewScreen({ route, navigation }) {
   const [review, setReview] = useState(route.params.review);
-  const [cafe, setCafe] = useState(route.params.cafe);
+  const [user, setUser] = useState(route.params.user);
   const [overall, setOverall] = useState(review.overall_rating);
   const [quality, setQuality] = useState(review.quality_rating);
   const [price, setPrice] = useState(review.price_rating);
@@ -20,10 +20,10 @@ export default function UpdateReviewScreen({ route, navigation }) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    setOverall(review.overall_rating);
-    setQuality(review.quality_rating);
-    setPrice(review.price_rating);
-    setCleanliness(review.clenliness_rating);
+    setOverall(review.review_overallrating);
+    setQuality(review.review_qualityrating);
+    setPrice(review.review_pricerating);
+    setCleanliness(review.review_clenlinessrating);
     setBody(review.review_body);
     setError('');
   }, []);
@@ -31,6 +31,7 @@ export default function UpdateReviewScreen({ route, navigation }) {
   // eslint-disable-next-line consistent-return
   async function onSubmitUpdate() {
     setError('');
+    setMessage('');
     if (!isReviewBodyValid(body).valid) {
       return setError(isReviewBodyValid(body).message);
     }
@@ -44,7 +45,7 @@ export default function UpdateReviewScreen({ route, navigation }) {
     };
 
     const res = await updateReview(
-      cafe.location_id,
+      review.review_location_id,
       review.review_id,
       reviewObj,
     );

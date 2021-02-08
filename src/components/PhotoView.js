@@ -9,7 +9,9 @@ import colors from '../config/colors';
 
 export default function PhotoView({ route, navigation }) {
   const { url } = route.params;
+  const { cafe } = route.params;
   const { review } = route.params;
+  const { isOwned } = route.params;
 
   async function deletePhoto() {
     Alert.alert('Warning', 'Are you sure you want to delete this photo?', [
@@ -20,7 +22,7 @@ export default function PhotoView({ route, navigation }) {
         text: 'Yes',
         onPress: async () => {
           const res = await deletePhotoFromReview(
-            review.review_location_id,
+            cafe.location_id,
             review.review_id,
           );
           if (res.ok) {
@@ -40,15 +42,17 @@ export default function PhotoView({ route, navigation }) {
         style={styles.photo}
         resizeMode="cover"
       >
-        <Icon
-          name="trash"
-          type="font-awesome-5"
-          color={colors.primary}
-          size={16}
-          raised
-          solid
-          onPress={deletePhoto}
-        />
+        {isOwned && (
+          <Icon
+            name="trash"
+            type="font-awesome-5"
+            color={colors.primary}
+            size={16}
+            raised
+            solid
+            onPress={deletePhoto}
+          />
+        )}
       </ImageBackground>
     </View>
   );

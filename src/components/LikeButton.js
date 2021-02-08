@@ -24,18 +24,35 @@ export default function LikeButton({ isLiked, onLike }) {
   //   setIsPressed(!isPressed);
   // }
 
-  return (
+  return isLiked ? (
     <Button
-      title={isLiked ? 'Liked' : 'Like'}
+      title="Liked"
       type="outline"
       containerStyle={styles.button_container}
-      buttonStyle={styles.button}
-      titleStyle={styles.button}
+      buttonStyle={styles.liked}
+      titleStyle={styles.liked_title}
       icon={
         <Icon
           name="thumbs-up"
           type="font-awesome-5"
           color={colors.accent}
+          size={14}
+          // raised
+          style={{ margin: 0 }}
+        />
+      }
+      onPress={onLike}
+    />
+  ) : (
+    <Button
+      title="Like"
+      containerStyle={styles.button_container}
+      buttonStyle={styles.unliked}
+      icon={
+        <Icon
+          name="thumbs-up"
+          type="font-awesome-5"
+          color="white"
           size={14}
           // raised
           style={{ margin: 0 }}
@@ -55,11 +72,26 @@ const styles = StyleSheet.create({
   button_container: {
     width: 70,
   },
-  button: {
+  liked: {
     color: colors.accent,
-    borderColor: colors.accent,
+    borderColor: colors.secondary,
+    borderWidth: 1,
     justifyContent: 'space-around',
     alignItems: 'center',
     fontSize: 14,
+    height: 30,
+  },
+  liked_title: {
+    color: colors.accent,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    fontSize: 14,
+  },
+  unliked: {
+    backgroundColor: colors.secondary,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    fontSize: 14,
+    height: 30,
   },
 });

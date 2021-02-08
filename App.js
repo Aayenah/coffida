@@ -9,10 +9,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
 import SearchScreen from './src/screens/SearchScreen';
 import FavouritesScreen from './src/screens/FavouritesScreen';
+import UserReviewsScreen from './src/screens/UserReviewsScreen';
 import HomeStack from './src/stacks/HomeStack';
 import { navigationRef } from './src/utility/RootNavigation';
 import colors from './src/config/colors';
 import AccountStack from './src/stacks/AccountStack';
+import MyReviewStack from './src/stacks/MyReviewStack';
 import AuthStack from './src/stacks/AuthStack';
 import {
   login,
@@ -161,6 +163,8 @@ const App = () => {
                   iconName = 'search';
                 } else if (route.name === 'Favourites') {
                   iconName = 'heart';
+                } else if (route.name === 'Reviews') {
+                  iconName = 'star-half-alt';
                 } else if (route.name === 'Account') {
                   iconName = 'user';
                 }
@@ -181,13 +185,14 @@ const App = () => {
               inactiveTintColor: colors.inactiveTab,
               activeBackgroundColor: colors.primary,
               inactiveBackgroundColor: colors.primary,
-              showLabel: false,
+              // showLabel: false,
               labelStyle: { fontSize: 11 },
             }}
           >
             <Tab.Screen name="Home" component={HomeStack} />
             <Tab.Screen name="Search" component={SearchScreen} />
             <Tab.Screen name="Favourites" component={FavouritesScreen} />
+            <Tab.Screen name="Reviews" component={MyReviewStack} />
             <Tab.Screen name="Account" component={AccountStack} />
           </Tab.Navigator>
         )}

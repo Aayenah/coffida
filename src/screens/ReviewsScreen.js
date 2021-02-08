@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import CafeReview from '../components/CafeReview';
 import LoadingScreen from './LoadingScreen';
-import { fetchCafeList } from '../utility/CafeHelpers';
+import { fetchCafeList, fetchCafeInfo } from '../utility/CafeHelpers';
 
 export default function ReviewsScreen({ route }) {
   const { cafe } = route.params;
@@ -14,12 +14,14 @@ export default function ReviewsScreen({ route }) {
   useEffect(() => {
     async function updateCafeInfo() {
       setLoading(true);
-      const list = await fetchCafeList();
-      const thisCafe = list.filter(
-        (loc) => loc.location_id === cafe.location_id,
-      );
+      // const list = await fetchCafeList();
+      // const thisCafe = list.filter(
+      //   (loc) => loc.location_id === cafe.location_id,
+      // );
+      const thisCafe = await fetchCafeInfo(cafe.location_id);
+      // console.log(thisCafe);
       if (thisCafe) {
-        setCurrentCafe(thisCafe[0]);
+        setCurrentCafe(thisCafe);
         setLoading(false);
       }
     }
@@ -31,7 +33,7 @@ export default function ReviewsScreen({ route }) {
   }
 
   const reviewsList = currentCafe.location_reviews.map((r) => (
-    <CafeReview key={r.review_id} review={r} />
+    <CafeReview key={r.review_id} cafe={currentCafe} review={r} />
   ));
 
   if (!reviewsList) {

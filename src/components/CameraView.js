@@ -9,6 +9,7 @@ import colors from '../config/colors';
 
 export default function CameraView({ route, navigation }) {
   const { review } = route.params;
+  const { cafe } = route.params;
   const [loading, setLoading] = useState(false);
 
   async function takePicture(camera) {
@@ -17,7 +18,7 @@ export default function CameraView({ route, navigation }) {
     try {
       const data = await camera.takePictureAsync(options);
       const res = await addPhotoToReview(
-        review.review_location_id,
+        cafe.location_id,
         review.review_id,
         data,
       );
