@@ -3,13 +3,13 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
-import { Input, AirbnbRating } from 'react-native-elements';
+import { Input, AirbnbRating, Button } from 'react-native-elements';
 import colors from '../config/colors';
 import SubmitReviewButton from '../components/SubmitReviewButton';
 import { isReviewBodyValid } from '../utility/InputValidator';
-import { updateReview } from '../utility/ReviewHelpers';
+import { deleteReview } from '../utility/ReviewHelpers';
 
-export default function UpdateReviewScreen({ route, navigation }) {
+export default function DeleteReviewScreen({ route, navigation }) {
   const [review, setReview] = useState(route.params.review);
   const [cafe, setCafe] = useState(route.params.cafe);
   // const { returnScreen } = route.params;
@@ -30,32 +30,16 @@ export default function UpdateReviewScreen({ route, navigation }) {
   }, []);
 
   // eslint-disable-next-line consistent-return
-  async function onSubmitUpdate() {
+  async function onSubmitDelete() {
     setError('');
-    if (!isReviewBodyValid(body).valid) {
-      return setError(isReviewBodyValid(body).message);
-    }
 
-    const reviewObj = {
-      overall_rating: overall,
-      price_rating: price,
-      quality_rating: quality,
-      clenliness_rating: cleanliness,
-      review_body: body,
-    };
-
-    const res = await updateReview(
-      cafe.location_id,
-      review.review_id,
-      reviewObj,
-    );
+    const res = await deleteReview(cafe.location_id, review.review_id);
 
     if (res.ok) {
-      // navigation.navigate(returnScreen);
       navigation.goBack();
     } else {
-      setError(`Failed to update review - ${res?.status}`);
-      Alert.alert('Error', `Failed to update review - ${res?.status}`);
+      setError(`Failed to delete review - ${res?.status}`);
+      Alert.alert('Error', `Failed to delete review - ${res?.status}`);
     }
   }
 
@@ -70,7 +54,7 @@ export default function UpdateReviewScreen({ route, navigation }) {
           size={20}
           showRating={false}
           selectedColor={colors.primary}
-          onFinishRating={(value) => setOverall(value)}
+          isDisabled
         />
       </View>
       <View style={styles.stars_row}>
@@ -81,7 +65,7 @@ export default function UpdateReviewScreen({ route, navigation }) {
           defaultRating={quality}
           size={20}
           showRating={false}
-          onFinishRating={(value) => setQuality(value)}
+          isDisabled
         />
       </View>
       <View style={styles.stars_row}>
@@ -92,7 +76,7 @@ export default function UpdateReviewScreen({ route, navigation }) {
           defaultRating={price}
           size={20}
           showRating={false}
-          onFinishRating={(value) => setPrice(value)}
+          isDisabled
         />
       </View>
       <View style={styles.stars_row}>
@@ -103,20 +87,21 @@ export default function UpdateReviewScreen({ route, navigation }) {
           defaultRating={cleanliness}
           size={20}
           showRating={false}
-          onFinishRating={(value) => setCleanliness(value)}
+          isDisabled
         />
       </View>
       <Text style={styles.error}>{error}</Text>
       <View style={styles.body}>
-        <Input
-          placeholder="Review"
-          value={body}
-          multiline
-          onChangeText={(value) => setBody(value)}
-        />
+        <Input placeholder="Review" value={body} multiline disabled />
       </View>
       <View style={styles.submit_row}>
-        <SubmitReviewButton onSubmit={onSubmitUpdate} />
+        <Button
+          title="Delete"
+          raised
+          containerStyle={styles.button_container}
+          buttonStyle={styles.button}
+          onPress={onSubmitDelete}
+        />
       </View>
     </ScrollView>
   );

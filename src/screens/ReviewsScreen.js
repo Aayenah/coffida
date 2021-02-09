@@ -1,39 +1,62 @@
-/* eslint-disable import/named */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable react/prop-types */
+/* eslint-disable import/named */
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import CafeReview from '../components/CafeReview';
 import LoadingScreen from './LoadingScreen';
 import { fetchCafeList, fetchCafeInfo } from '../utility/CafeHelpers';
+import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
+import { getPhotoForReview } from '../utility/ReviewHelpers';
 
 export default function ReviewsScreen({ route }) {
   const { cafe } = route.params;
   const [currentCafe, setCurrentCafe] = useState(cafe);
   const [loading, setLoading] = useState(false);
+  const isFocused = useIsFocused();
+
+  async function updateCafeData() {
+    const thisCafe = await fetchCafeInfo(cafe.location_id);
+    if (thisCafe) {
+      for (const r of thisCafe.location_reviews) {
+        const res = await getPhotoForReview(thisCafe.location_id, r.review_id);
+        if (res.ok) {
+          r.photoUrl = res.url;
+        } else {
+          r.photoUrl = 'none';
+        }
+      }
+      setCurrentCafe(thisCafe);
+    }
+  }
 
   useEffect(() => {
-    async function updateCafeInfo() {
-      setLoading(true);
-      // const list = await fetchCafeList();
-      // const thisCafe = list.filter(
-      //   (loc) => loc.location_id === cafe.location_id,
-      // );
-      const thisCafe = await fetchCafeInfo(cafe.location_id);
-      // console.log(thisCafe);
-      if (thisCafe) {
-        setCurrentCafe(thisCafe);
-        setLoading(false);
-      }
+    async function prepareComponent() {
+      await updateCafeData();
     }
-    updateCafeInfo();
-  }, []);
+    prepareComponent();
+  }, [isFocused]);
 
-  if (loading) {
+  if (!currentCafe) {
     return <LoadingScreen />;
   }
 
-  const reviewsList = currentCafe.location_reviews.map((r) => (
-    <CafeReview key={r.review_id} cafe={currentCafe} review={r} />
+  const sortedList = currentCafe.location_reviews.sort((a, b) => {
+    // sort by review id descending
+    if (a.review_id < b.review_id) return 1;
+    if (a.review_id > b.review_id) return -1;
+    return 0;
+  });
+
+  const reviewsList = sortedList.map((r) => (
+    <CafeReview
+      key={r.review_id}
+      cafe={currentCafe}
+      review={r}
+      returnScreen="Cafe Screen"
+    />
   ));
 
   if (!reviewsList) {

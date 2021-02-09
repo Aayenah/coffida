@@ -33,7 +33,7 @@ export default function HomeStack() {
       <Stack.Screen
         name="Camera View"
         component={CameraView}
-        options={{ title: 'Camera' }}
+        options={{ title: 'Camera', headerShown: false }}
       />
       <Stack.Screen
         name="Add Review Screen"

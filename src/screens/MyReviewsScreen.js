@@ -1,39 +1,78 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable react/prop-types */
 /* eslint-disable import/named */
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Divider } from 'react-native-elements';
+import { useIsFocused } from '@react-navigation/native';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
-import CafeReview from '../components/CafeReview';
+import { getPhotoForReview } from '../utility/ReviewHelpers';
 import LoadingScreen from './LoadingScreen';
-import colors from '../config/colors';
+// import colors from '../config/colors';
+import MyReview from '../components/MyReview';
 
 export default function MyReviewsScreen() {
   const [user, setUser] = useState(null);
+  const isFocused = useIsFocused();
 
-  useEffect(() => {
-    async function prepareComponent() {
-      const id = await getUserIdFromStorage();
-      const currentUser = await getUserInfo(id);
+  async function updateUserData() {
+    const id = await getUserIdFromStorage();
+    const currentUser = await getUserInfo(id);
+    if (currentUser) {
+      for (const r of currentUser.reviews) {
+        const res = await getPhotoForReview(
+          r.location.location_id,
+          r.review.review_id,
+        );
+        if (res.ok) {
+          r.review.photoUrl = res.url;
+        } else {
+          r.review.photoUrl = 'none';
+        }
+      }
       setUser(currentUser);
     }
+  }
+
+  useEffect(() => {
+    console.log('MyReviewsScreen focused? ', isFocused);
+    async function prepareComponent() {
+      await updateUserData();
+    }
     prepareComponent();
-  }, []);
+  }, [isFocused]);
 
   if (!user) {
     return <LoadingScreen />;
   }
 
-  const userReviewsList = user.reviews.map((r) => (
-    <CafeReview key={r.review.review_id} cafe={r.location} review={r.review} />
-  ));
+  const sortedList = user.reviews.sort((a, b) => {
+    // sort by review id descending
+    if (a.review.review_id < b.review.review_id) return 1;
+    if (a.review.review_id > b.review.review_id) return -1;
+    return 0;
+  });
 
-  const noReviewsText = <Text>You do not have any reviews yet</Text>;
+  const listComponent = sortedList.map((r) => {
+    return (
+      <MyReview
+        key={r.review.review_id}
+        cafe={r.location}
+        review={r.review}
+        returnScreen="My Reviews Screen"
+      />
+    );
+  });
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>{`My Reviews (${user.reviews.length})`}</Text>
       <View style={styles.list}>
-        {user.reviews.length > 1 ? userReviewsList : noReviewsText}
+        {listComponent.length > 0 ? (
+          listComponent
+        ) : (
+          <Text>You do not have any reviews yet</Text>
+        )}
       </View>
     </ScrollView>
   );

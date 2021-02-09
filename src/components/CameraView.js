@@ -1,11 +1,12 @@
 /* eslint-disable import/named */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { RNCamera } from 'react-native-camera';
 import { addPhotoToReview } from '../utility/ReviewHelpers';
 import colors from '../config/colors';
+import LoadingScreen from '../screens/LoadingScreen';
 
 export default function CameraView({ route, navigation }) {
   const { review } = route.params;
@@ -24,7 +25,7 @@ export default function CameraView({ route, navigation }) {
       );
 
       if (res.ok) {
-        navigation.navigate('Cafe Screen');
+        navigation.goBack();
       } else {
         Alert.alert('Error', `Failed to add photo - ${res?.status}`);
       }
@@ -34,23 +35,16 @@ export default function CameraView({ route, navigation }) {
     setLoading(false);
   }
 
-  // useEffect(() => {}, []);
-
-  const PendingView = () => (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: 'grey',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Text>Waiting</Text>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
+      <Icon
+        name="times"
+        type="font-awesome-5"
+        color={colors.primary}
+        size={14}
+        raised
+        onPress={() => navigation.goBack()}
+      />
       <RNCamera
         style={styles.preview}
         type={RNCamera.Constants.Type.back}
@@ -64,7 +58,7 @@ export default function CameraView({ route, navigation }) {
         }}
       >
         {({ camera, status }) => {
-          if (status !== 'READY') return <PendingView />;
+          if (status !== 'READY') return <LoadingScreen />;
           return (
             <View
               style={{
@@ -95,7 +89,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'black',
+    backgroundColor: 'white',
   },
   preview: {
     flex: 1,

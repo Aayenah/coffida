@@ -7,11 +7,12 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
-import { Card, Avatar, Rating, Image } from 'react-native-elements';
+import { Card, Rating, Image } from 'react-native-elements';
+import Toast from 'react-native-simple-toast';
 import PropTypes from 'prop-types';
+import * as RootNavigation from '../utility/RootNavigation';
 import colors from '../config/colors';
 import AspectRating from './AspectRating';
-import ReviewPlaceholder from './ReviewPlaceholder';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
 import {
   likeReview,
@@ -22,62 +23,93 @@ import {
 import AddPhotoButton from './AddPhotoButton';
 import DeleteReviewButton from './DeleteReviewButton';
 import UpdateReviewButton from './UpdateReviewButton';
-import * as RootNavigation from '../utility/RootNavigation';
+import ReviewPlaceholder from './ReviewPlaceholder';
 
-export default function MyReview({ user, review }) {
+export default function MyReview({ cafe, review, returnScreen }) {
+  const [isLiked, setIsLiked] = useState(false);
+  const [isOwned, setIsOwned] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imageData, setImageData] = useState(null);
-  const [isOwned, setIsOwned] = useState(true);
   const [likes, setLikes] = useState(review.likes);
 
-  async function checkReviewPhoto() {
-    const data = await getPhotoForReview(
-      review.review_location_id,
-      review.review_id,
-    );
-    setImageData(data);
+  async function checkReviewOwnedByUser() {
+    const id = await getUserIdFromStorage();
+    const user = await getUserInfo(id);
+
+    if (user) {
+      const isReviewOwned = user.reviews.some(
+        (r) => r.review.review_id === review.review_id,
+      );
+      setIsOwned(isReviewOwned);
+    }
   }
 
-  function openCameraView() {
-    RootNavigation.navigate('Camera View', { review });
+  async function checkLikedReviews() {
+    const id = await getUserIdFromStorage();
+    const user = await getUserInfo(id);
+    if (user) {
+      const reviewLiked = user.liked_reviews.some(
+        (r) => r.review.review_id === review.review_id,
+      );
+      setIsLiked(reviewLiked);
+    }
+  }
+
+  function onOpenCamera() {
+    RootNavigation.navigate('Camera View', {
+      cafe,
+      review,
+      returnScreen,
+    });
+  }
+
+  function onViewPhoto() {
+    RootNavigation.navigate('Photo View', {
+      url: review.photoUrl,
+      cafe,
+      review,
+      isOwned,
+    });
   }
 
   function onUpdateReview() {
-    console.log(review);
-    // RootNavigation.navigate('Update Review Screen', { review });
+    RootNavigation.navigate('Update Review Screen', {
+      cafe,
+      review,
+    });
   }
 
   async function onDeleteReview() {
-    Alert.alert('Warning', 'Are you sure you want to delete this review?', [
-      {
-        text: 'No',
-      },
-      {
-        text: 'Yes',
-        onPress: async () => {
-          const res = await deleteReview(
-            review.review_location_id,
-            review.review_id,
-          );
-          if (res.ok) {
-            RootNavigation.goBack();
-          } else {
-            Alert.alert('Error', `Failed to delete review - ${res?.status}`);
-          }
-        },
-      },
-    ]);
+    RootNavigation.navigate('Delete Review Screen', { cafe, review });
   }
+
+  // async function onDeleteReview() {
+  //   Alert.alert('Warning', 'Are you sure you want to delete this review?', [
+  //     {
+  //       text: 'No',
+  //     },
+  //     {
+  //       text: 'Yes',
+  //       onPress: async () => {
+  //         const res = await deleteReview(cafe.location_id, review.review_id);
+  //         if (res.ok) {
+  //           // Toast.show('Review deleted');
+  //           RootNavigation.navigate('Delete Reviews Screen');
+  //           Alert.alert('Review deleted');
+  //         } else {
+  //           Alert.alert('Error', `Failed to delete review - ${res?.status}`);
+  //         }
+  //       },
+  //     },
+  //   ]);
+  // }
 
   useEffect(() => {
     async function prepareComponent() {
       setLoading(true);
-      await checkReviewPhoto();
-      setInitials(
-        `${user.first_name.charAt(0).toUpperCase()}${user.last_name
-          .charAt(0)
-          .toUpperCase()}`,
-      );
+      await checkReviewOwnedByUser();
+      await checkLikedReviews();
+      // await checkReviewPhoto();
       setLoading(false);
     }
     prepareComponent();
@@ -91,20 +123,15 @@ export default function MyReview({ user, review }) {
     <TouchableWithoutFeedback>
       <Card containerStyle={styles.card}>
         <View style={styles.user_row}>
-          <Avatar
-            size="medium"
-            title={initials}
-            rounded
-            activeOpacity={0.7}
-            containerStyle={styles.avatar}
-          />
-          <Text style={styles.full_name}>{fullName}</Text>
-          <Text style={styles.menu}>{review.review_id}</Text>
-          <View style={styles.controls}>
-            <AddPhotoButton openCameraView={openCameraView} />
-            <DeleteReviewButton onDelete={onDeleteReview} />
-            <UpdateReviewButton onUpdate={onUpdateReview} />
-          </View>
+          <Text style={styles.cafe_name}>{cafe.location_name}</Text>
+          <Text style={styles.cafe_name}>{review.review_id}</Text>
+          {isOwned && (
+            <View style={styles.controls}>
+              <AddPhotoButton openCameraView={onOpenCamera} />
+              <DeleteReviewButton onDelete={onDeleteReview} />
+              <UpdateReviewButton onUpdate={onUpdateReview} />
+            </View>
+          )}
         </View>
         <View style={styles.body}>
           <View style={styles.stars_row}>
@@ -129,27 +156,22 @@ export default function MyReview({ user, review }) {
               rating={review.clenliness_rating}
             />
           </View>
-          <Card.Divider />
-          <Text style={styles.review_text}>{review.review_body}</Text>
-          {imageData?.ok && (
-            <View>
+          <Card.Divider style={{ marginBottom: 0 }} />
+          {review.photoUrl !== 'none' && (
+            <View style={styles.image_row}>
               <Image
-                source={{ uri: imageData.url }}
+                source={{ uri: review.photoUrl }}
                 style={{ width: '100%', height: 200 }}
                 resizeMode="contain"
-                onPress={() =>
-                  // eslint-disable-next-line implicit-arrow-linebreak
-                  RootNavigation.navigate('Photo View', {
-                    url: imageData.url,
-                    review,
-                    isOwned,
-                  })
-                }
+                onPress={onViewPhoto}
               />
             </View>
           )}
+          <Card.Divider />
+          <Text style={styles.review_text}>{review.review_body}</Text>
           <Card.Divider style={{ marginBottom: 0 }} />
           <View style={styles.footer}>
+            {/* <LikeButton isLiked={isLiked} onLike={onLike} /> */}
             <Text style={styles.likes}>{`${likes} likes`}</Text>
           </View>
         </View>
@@ -160,9 +182,10 @@ export default function MyReview({ user, review }) {
 
 MyReview.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  user: PropTypes.object.isRequired,
+  cafe: PropTypes.object.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   review: PropTypes.object.isRequired,
+  returnScreen: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -170,8 +193,9 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 0,
     marginHorizontal: 0,
-    marginVertical: 10,
+    marginVertical: 20,
     paddingTop: 2,
+    borderColor: 'lightgrey',
   },
   user_row: {
     flexDirection: 'row',
@@ -179,29 +203,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 2,
   },
-  avatar: {
-    backgroundColor: colors.primary,
-  },
-  full_name: {
-    fontFamily: 'Roboto',
+  cafe_name: {
     fontSize: 16,
-    marginLeft: 10,
-    color: colors.bodyText,
-  },
-  review_count: {
-    fontFamily: 'Roboto',
-    fontSize: 12,
-    color: colors.bodyText,
+    fontWeight: 'bold',
   },
   controls: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '20%',
+    width: '30%',
     marginLeft: 'auto',
   },
   body: {
     paddingHorizontal: 10,
     paddingTop: 2,
+  },
+  image_row: {
+    // backgroundColor: 'floralwhite',
   },
   stars: {
     marginRight: 10,

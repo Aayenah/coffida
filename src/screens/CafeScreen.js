@@ -1,8 +1,11 @@
-/* eslint-disable import/named */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable react/prop-types */
+/* eslint-disable import/named */
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
+import { useIsFocused } from '@react-navigation/native';
 import Toast from 'react-native-simple-toast';
 import ImageHeader from '../components/ImageHeader';
 import CafeTitle from '../components/CafeTitle';
@@ -14,6 +17,7 @@ import {
   addToFavourites,
   removeFromFavourites,
   fetchCafeList,
+  fetchCafeInfo,
 } from '../utility/CafeHelpers';
 import { getUserIdFromStorage, getUserInfo } from '../utility/Authentication';
 
@@ -21,6 +25,12 @@ export default function CafeScreen({ route }) {
   const { cafe } = route.params;
   const [currentCafe, setCurrentCafe] = useState(cafe);
   const [isFav, setIsFav] = useState(false);
+  const isFocused = useIsFocused();
+
+  async function updateCafeData() {
+    const data = await fetchCafeInfo(cafe.location_id);
+    setCurrentCafe(data);
+  }
 
   async function onFav() {
     if (isFav) {
@@ -55,17 +65,11 @@ export default function CafeScreen({ route }) {
 
   useEffect(() => {
     async function prepareComponent() {
-      const list = await fetchCafeList();
-      const thisCafe = list.filter(
-        (loc) => loc.location_id === cafe.location_id,
-      );
-      if (thisCafe) {
-        setCurrentCafe(thisCafe[0]);
-        await checkFavourites();
-      }
+      await updateCafeData();
+      await checkFavourites();
     }
     prepareComponent();
-  }, []);
+  }, [isFocused]);
 
   return (
     <ScrollView style={styles.container}>

@@ -84,7 +84,10 @@ export default function CafeReview({ cafe, review }) {
   }
 
   function onOpenCamera() {
-    RootNavigation.navigate('Camera View', { cafe, review });
+    RootNavigation.navigate('Camera View', {
+      cafe,
+      review,
+    });
   }
 
   function onViewPhoto() {
@@ -97,7 +100,10 @@ export default function CafeReview({ cafe, review }) {
   }
 
   function onUpdateReview() {
-    RootNavigation.navigate('Update Review Screen', { cafe, review });
+    RootNavigation.navigate('Update Review Screen', {
+      cafe,
+      review,
+    });
   }
 
   async function onDeleteReview() {
@@ -111,6 +117,7 @@ export default function CafeReview({ cafe, review }) {
           const res = await deleteReview(cafe.location_id, review.review_id);
           if (res.ok) {
             RootNavigation.goBack();
+            // Toast.show('Review deleted');
           } else {
             Alert.alert('Error', `Failed to delete review - ${res?.status}`);
           }
@@ -171,10 +178,10 @@ export default function CafeReview({ cafe, review }) {
             />
           </View>
           <Card.Divider style={{ marginBottom: 0 }} />
-          {imageData?.ok && (
+          {review.photoUrl !== 'none' && (
             <View style={styles.image_row}>
               <Image
-                source={{ uri: imageData.url }}
+                source={{ uri: review.photoUrl }}
                 style={{ width: '100%', height: 200 }}
                 resizeMode="contain"
                 onPress={onViewPhoto}
@@ -199,6 +206,7 @@ CafeReview.propTypes = {
   cafe: PropTypes.object.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   review: PropTypes.object.isRequired,
+  returnScreen: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({

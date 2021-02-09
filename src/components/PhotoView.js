@@ -26,7 +26,7 @@ export default function PhotoView({ route, navigation }) {
             review.review_id,
           );
           if (res.ok) {
-            navigation.navigate('Cafe Screen');
+            navigation.goBack();
           } else {
             Alert.alert('Error', `Failed to delete photo - ${res?.status}`);
           }
