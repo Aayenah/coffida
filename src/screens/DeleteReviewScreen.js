@@ -3,10 +3,10 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
-import { Input, AirbnbRating, Button } from 'react-native-elements';
+import { Input, AirbnbRating } from 'react-native-elements';
+import Toast from 'react-native-simple-toast';
 import colors from '../config/colors';
-import SubmitReviewButton from '../components/SubmitReviewButton';
-import { isReviewBodyValid } from '../utility/InputValidator';
+import DeleteReviewButton from '../components/DeleteReviewButton';
 import { deleteReview } from '../utility/ReviewHelpers';
 
 export default function DeleteReviewScreen({ route, navigation }) {
@@ -33,14 +33,24 @@ export default function DeleteReviewScreen({ route, navigation }) {
   async function onSubmitDelete() {
     setError('');
 
-    const res = await deleteReview(cafe.location_id, review.review_id);
-
-    if (res.ok) {
-      navigation.goBack();
-    } else {
-      setError(`Failed to delete review - ${res?.status}`);
-      Alert.alert('Error', `Failed to delete review - ${res?.status}`);
-    }
+    Alert.alert('Warning', 'Are you sure you want to delete this review?', [
+      {
+        text: 'No',
+      },
+      {
+        text: 'Yes',
+        onPress: async () => {
+          const res = await deleteReview(cafe.location_id, review.review_id);
+          if (res.ok) {
+            Toast.show('Review deleted');
+            navigation.goBack();
+          } else {
+            setError(`Failed to delete review - ${res?.status}`);
+            Alert.alert('Error', `Failed to delete review - ${res?.status}`);
+          }
+        },
+      },
+    ]);
   }
 
   return (
@@ -95,13 +105,7 @@ export default function DeleteReviewScreen({ route, navigation }) {
         <Input placeholder="Review" value={body} multiline disabled />
       </View>
       <View style={styles.submit_row}>
-        <Button
-          title="Delete"
-          raised
-          containerStyle={styles.button_container}
-          buttonStyle={styles.button}
-          onPress={onSubmitDelete}
-        />
+        <DeleteReviewButton onDelete={onSubmitDelete} />
       </View>
     </ScrollView>
   );

@@ -22,7 +22,7 @@ import {
   getPhotoForReview,
 } from '../utility/ReviewHelpers';
 import AddPhotoButton from './AddPhotoButton';
-import DeleteReviewButton from './DeleteReviewButton';
+import DeleteReviewIcon from './DeleteReviewIcon';
 import UpdateReviewButton from './UpdateReviewButton';
 import ReviewPlaceholder from './ReviewPlaceholder';
 
@@ -107,23 +107,7 @@ export default function CafeReview({ cafe, review }) {
   }
 
   async function onDeleteReview() {
-    Alert.alert('Warning', 'Are you sure you want to delete this review?', [
-      {
-        text: 'No',
-      },
-      {
-        text: 'Yes',
-        onPress: async () => {
-          const res = await deleteReview(cafe.location_id, review.review_id);
-          if (res.ok) {
-            RootNavigation.goBack();
-            // Toast.show('Review deleted');
-          } else {
-            Alert.alert('Error', `Failed to delete review - ${res?.status}`);
-          }
-        },
-      },
-    ]);
+    RootNavigation.navigate('Delete Review Screen', { cafe, review });
   }
 
   useEffect(() => {
@@ -149,7 +133,7 @@ export default function CafeReview({ cafe, review }) {
           {isOwned && (
             <View style={styles.controls}>
               <AddPhotoButton openCameraView={onOpenCamera} />
-              <DeleteReviewButton onDelete={onDeleteReview} />
+              <DeleteReviewIcon onDelete={onDeleteReview} />
               <UpdateReviewButton onUpdate={onUpdateReview} />
             </View>
           )}
@@ -206,7 +190,6 @@ CafeReview.propTypes = {
   cafe: PropTypes.object.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   review: PropTypes.object.isRequired,
-  returnScreen: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({

@@ -1,27 +1,14 @@
 /* eslint-disable import/named */
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { Card, Rating, Image } from 'react-native-elements';
-import Toast from 'react-native-simple-toast';
 import PropTypes from 'prop-types';
 import * as RootNavigation from '../utility/RootNavigation';
 import colors from '../config/colors';
 import AspectRating from './AspectRating';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
-import {
-  likeReview,
-  unlikeReview,
-  deleteReview,
-  getPhotoForReview,
-} from '../utility/ReviewHelpers';
 import AddPhotoButton from './AddPhotoButton';
-import DeleteReviewButton from './DeleteReviewButton';
+import DeleteReviewIcon from './DeleteReviewIcon';
 import UpdateReviewButton from './UpdateReviewButton';
 import ReviewPlaceholder from './ReviewPlaceholder';
 
@@ -29,7 +16,6 @@ export default function MyReview({ cafe, review, returnScreen }) {
   const [isLiked, setIsLiked] = useState(false);
   const [isOwned, setIsOwned] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [imageData, setImageData] = useState(null);
   const [likes, setLikes] = useState(review.likes);
 
   async function checkReviewOwnedByUser() {
@@ -128,7 +114,7 @@ export default function MyReview({ cafe, review, returnScreen }) {
           {isOwned && (
             <View style={styles.controls}>
               <AddPhotoButton openCameraView={onOpenCamera} />
-              <DeleteReviewButton onDelete={onDeleteReview} />
+              <DeleteReviewIcon onDelete={onDeleteReview} />
               <UpdateReviewButton onUpdate={onUpdateReview} />
             </View>
           )}

@@ -1,15 +1,16 @@
 import React from 'react';
-import { Icon } from 'react-native-elements';
+import { StyleSheet } from 'react-native';
+import { Button } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
 
 export default function DeleteReviewButton({ onDelete }) {
   return (
-    <Icon
-      name="trash"
-      type="font-awesome-5"
-      color={colors.secondary}
-      size={16}
+    <Button
+      title="Delete Review"
+      raised
+      containerStyle={styles.button_container}
+      buttonStyle={styles.button}
       onPress={onDelete}
     />
   );
@@ -18,3 +19,13 @@ export default function DeleteReviewButton({ onDelete }) {
 DeleteReviewButton.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
+
+const styles = StyleSheet.create({
+  button_container: {
+    width: '50%',
+  },
+  button: {
+    color: 'white',
+    backgroundColor: colors.primary,
+  },
+});
