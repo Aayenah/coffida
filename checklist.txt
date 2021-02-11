@@ -8,15 +8,18 @@
 [X] Favourite/Unfavourite cafe from cafe screen
 [ ] Filter cafe list by nearby cafes
 [ ] Setup geolocation
-  [X] Ask user for permissions
+  [ ] Ask user for permissions
   [ ] Define what to happen if permission denied
-  [X] Calculate distance from current location to cafe location
-  [X] Display distance in miles for each cafe card 
-  [X] Save current coords in storage
-[ ] Setup search screen
-  [ ] Search for cafes by name, ratings etc
-[ ] Setup favourites screen
-  [ ] Display favourite cafes
+  [ ] Calculate distance from current location to cafe location
+  [ ] Display distance in miles for each cafe card 
+  [ ] Save current coords in storage
+[X] Setup search screen
+  [X] Search for cafes by name
+  [X] Filter cafes by ratings
+  [X] Filter cafes by group (favourite, reviewed)
+[X] Setup favourites screen
+  [X] Display favourite cafes
+  [X] Allow user to unfavourite cafe
 [X] Setup authentication screen
   [X] Check if user is authenticated
   [X] Present option to login or register

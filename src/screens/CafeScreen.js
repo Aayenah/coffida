@@ -16,7 +16,6 @@ import ReviewsSection from '../components/ReviewsSection';
 import {
   addToFavourites,
   removeFromFavourites,
-  fetchCafeList,
   fetchCafeInfo,
 } from '../utility/CafeHelpers';
 import { getUserIdFromStorage, getUserInfo } from '../utility/Authentication';
@@ -80,7 +79,7 @@ export default function CafeScreen({ route }) {
             title={currentCafe.location_name}
             town={currentCafe.location_town}
           />
-          <FavouritesButton isFav={isFav} onFav={onFav} />
+          <FavouritesButton isFav={isFav} onFav={onFav} size={20} />
         </View>
         <AverageStars
           avg={currentCafe.avg_overall_rating}

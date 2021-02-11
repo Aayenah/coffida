@@ -15,7 +15,13 @@ async function searchCafes(query) {
   let cafes = [];
   try {
     const res = await fetch(
-      `${BASE_URL}/find?q=${query.q}&overall_rating=${query.overall}&price_rating=${query.price}&quality_rating=${query.quality}&clenliness_rating=${query.cleanliness}`,
+      `${BASE_URL}/find` +
+        `?q=${query.q}` +
+        `&overall_rating=${query.overall}` +
+        `&price_rating=${query.price}` +
+        `&quality_rating=${query.quality}` +
+        `&clenliness_rating=${query.cleanliness}` +
+        `&search_in=${query.searchIn}`,
       options,
     );
     cafes = await res.json();

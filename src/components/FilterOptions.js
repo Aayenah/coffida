@@ -10,6 +10,7 @@ import {
   ButtonGroup,
 } from 'react-native-elements';
 import colors from '../config/colors';
+import ApplyFilterButton from './ApplyFilterButton';
 
 export default function FilterOptions({ options }) {
   const buttons = ['All', 'Favourites', 'Reviewed'];
@@ -17,6 +18,13 @@ export default function FilterOptions({ options }) {
 
   function updateIndex(index) {
     setSelectedIndex(index);
+    if (index === 0) {
+      options.setSearchIn('');
+    } else if (index === 1) {
+      options.setSearchIn('favourite');
+    } else {
+      options.setSearchIn('reviewed');
+    }
   }
 
   return (
@@ -87,6 +95,9 @@ export default function FilterOptions({ options }) {
           selectedButtonStyle={styles.selected_button}
         />
       </View>
+      <View style={styles.apply_row}>
+        <ApplyFilterButton onApply={options.onSearch} />
+      </View>
     </View>
   );
 }
@@ -97,7 +108,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    backgroundColor: colors.accent,
+    backgroundColor: 'floralwhite',
     paddingHorizontal: 10,
   },
   slider_row: {
@@ -115,7 +126,7 @@ const styles = StyleSheet.create({
   thumb: {
     height: 15,
     width: 15,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
   },
   label: {
     fontFamily: 'Roboto',
@@ -133,6 +144,13 @@ const styles = StyleSheet.create({
     width: '70%',
   },
   selected_button: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
+  },
+  apply_row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    marginVertical: 10,
   },
 });

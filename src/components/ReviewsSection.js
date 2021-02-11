@@ -19,6 +19,17 @@ export default function ReviewsSection({ cafe }) {
     totalReviews = `${cafe.location_reviews.length} Reviews`;
   }
 
+  let ratingString = '';
+
+  if (Number.isNaN(cafe.avg_overall_rating) || !cafe.avg_overall_rating) {
+    ratingString = 'No Reviews';
+  } else {
+    ratingString =
+      cafe.avg_overall_rating < 1
+        ? 'No Reviews'
+        : `${cafe.avg_overall_rating.toFixed(1)}`;
+  }
+
   function goToAllReviews() {
     RootNavigation.navigate('Reviews Screen', { cafe });
   }
@@ -31,9 +42,7 @@ export default function ReviewsSection({ cafe }) {
     <View style={styles.container}>
       <Text style={styles.title}>Reviews</Text>
       <Text style={styles.subtitle}>Overall</Text>
-      <Text style={styles.avg_number}>
-        {cafe.avg_overall_rating.toFixed(1)}
-      </Text>
+      <Text style={styles.avg_number}>{ratingString}</Text>
       <View style={styles.stars_row}>
         <Rating
           readonly

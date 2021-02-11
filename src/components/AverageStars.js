@@ -5,8 +5,16 @@ import PropTypes from 'prop-types';
 import colors from '../config/colors';
 
 export default function AverageStars({ avg, total }) {
-  const average = avg < 1 ? ' -' : ` ${avg.toFixed(1)}`;
+  // const average = avg < 1 ? ' -' : ` ${avg.toFixed(1)}`;
   const count = ` (${total})`;
+
+  let avgString = '';
+
+  if (Number.isNaN(avg) || !avg) {
+    avgString = ' No Reviews';
+  } else {
+    avgString = avg < 1 ? 'No Reviews' : `${avg.toFixed(1)}`;
+  }
 
   return (
     <View style={styles.container}>
@@ -18,7 +26,7 @@ export default function AverageStars({ avg, total }) {
         solid
       />
       <View style={styles.row}>
-        <Text style={styles.rating}>{average}</Text>
+        <Text style={styles.rating}>{avgString}</Text>
         <Text style={styles.total}>{count}</Text>
       </View>
     </View>

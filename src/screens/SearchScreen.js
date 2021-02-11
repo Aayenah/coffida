@@ -21,9 +21,25 @@ export default function SearchScreen() {
   const [quality, setQuality] = useState(0);
   const [price, setPrice] = useState(0);
   const [cleanliness, setCleanliness] = useState(0);
+  const [searchIn, setSearchIn] = useState('');
   const [cafeList, setCafeList] = useState([]);
   const [optionsVisible, setOptionsVisible] = useState(false);
   const isFocused = useIsFocused();
+
+  async function onSearch() {
+    const queryObj = {
+      q: query,
+      overall,
+      quality,
+      price,
+      cleanliness,
+      searchIn,
+    };
+
+    const data = await searchCafes(queryObj);
+    setCafeList(data);
+  }
+
   const filterOptions = {
     overall,
     setOverall,
@@ -33,6 +49,9 @@ export default function SearchScreen() {
     setPrice,
     cleanliness,
     setCleanliness,
+    searchIn,
+    setSearchIn,
+    onSearch,
   };
 
   useEffect(() => {
@@ -44,25 +63,13 @@ export default function SearchScreen() {
         quality,
         price,
         cleanliness,
+        searchIn,
       };
       const data = await searchCafes(queryObj);
       setCafeList(data);
     }
     prepareComponent();
   }, []);
-
-  async function onSearch() {
-    const queryObj = {
-      q: query,
-      overall,
-      quality,
-      price,
-      cleanliness,
-    };
-
-    const data = await searchCafes(queryObj);
-    setCafeList(data);
-  }
 
   function onFilter() {
     setOptionsVisible(!optionsVisible);
@@ -83,7 +90,7 @@ export default function SearchScreen() {
           round
           containerStyle={styles.search_container}
           inputContainerStyle={styles.input_container}
-          inputStyle={{ fontSize: 14 }}
+          inputStyle={styles.input}
         />
         <View style={styles.filter_row}>
           <FilterButton onFilter={onFilter} />
@@ -96,7 +103,11 @@ export default function SearchScreen() {
       </View>
       <ScrollView style={styles.scroll}>
         <View style={styles.list}>
-          {cafeListComponent && cafeListComponent}
+          {cafeListComponent.length > 0 ? (
+            cafeListComponent
+          ) : (
+            <Text style={styles.message}>No locations found.</Text>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -108,8 +119,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: 'white',
     height: '100%',
-    // paddingHorizontal: 10,
-    // paddingTop: 20,
   },
   title: {
     fontSize: 18,
@@ -117,27 +126,36 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     color: 'black',
   },
+  message: {
+    fontFamily: 'Roboto',
+    fontWeight: 'bold',
+    color: colors.bodyText,
+    paddingHorizontal: 10,
+    marginTop: 20,
+  },
   controls: {
     borderBottomWidth: 1,
     borderBottomColor: colors.primary,
   },
   search_container: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.primary,
     borderTopWidth: 0,
     borderBottomWidth: 0,
   },
   input_container: {
     backgroundColor: 'white',
+    color: 'white',
     height: 30,
   },
+  input: {
+    fontSize: 16,
+    color: colors.bodyText,
+  },
   filter_row: {
-    backgroundColor: colors.accent,
+    backgroundColor: 'floralwhite',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  options: {
-    // height: 200,
   },
   list: {
     marginBottom: 100,

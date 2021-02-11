@@ -16,7 +16,7 @@ export default function FilterButton({ onFilter }) {
         <Icon
           name="filter"
           type="font-awesome-5"
-          color="white"
+          color={colors.primary}
           solid
           size={14}
         />
