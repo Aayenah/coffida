@@ -78,9 +78,11 @@ const App = () => {
         console.log(`APP: userToken - ${userToken}`);
         id = await getUserIdFromStorage();
         currentUser = await getUserInfo(id);
-        console.log(
-          `APP: currentUser - ${currentUser.email} - ${currentUser.user_id}`,
-        );
+        if (currentUser) {
+          console.log(
+            `APP: currentUser - ${currentUser.email} - ${currentUser.user_id}`,
+          );
+        }
       } catch (err) {
         console.log(`Error restoring token: ${err}`);
       }

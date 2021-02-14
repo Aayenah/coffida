@@ -54,6 +54,9 @@
       [X] Add photo to review owned by current user
       [X] View review photo
       [X] Delete own photo
+[ ] Finalization
+  [ ] Add error alerts for user
+  [ ] Add comments to code
 
 
 

@@ -1,8 +1,6 @@
 /* eslint-disable import/named */
 import { BASE_URL } from './Endpoints';
 import { getUserTokenFromStorage } from './Authentication';
-import { reviewBodyFilter } from '../config/filters';
-import { isReviewBodyValid } from './InputValidator';
 
 async function likeReview(locationId, reviewId) {
   const token = await getUserTokenFromStorage();

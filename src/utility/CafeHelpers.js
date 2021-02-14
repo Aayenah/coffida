@@ -1,17 +1,11 @@
 /* eslint-disable import/named */
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  BASE_URL,
-  GET_LOCATION,
-  FAV_LOCATION,
-  FIND_LOCATION,
-} from './Endpoints';
+import { BASE_URL } from './Endpoints';
 import { getUserTokenFromStorage } from './Authentication';
 
 const fetchCafeInfo = async (id) => {
   let cafe = null;
   try {
-    const res = await fetch(`${BASE_URL}${GET_LOCATION}/${id}`);
+    const res = await fetch(`${BASE_URL}/location/${id}`);
     cafe = await res.json();
   } catch (err) {
     console.log('ERROR! fetchCafeInfo: ', err);
@@ -27,12 +21,13 @@ async function fetchCafeList() {
     },
   };
 
-  let cafes = [];
+  let cafes = null;
   try {
-    const res = await fetch(`${BASE_URL}${FIND_LOCATION}`, options);
+    const res = await fetch(`${BASE_URL}/find`, options);
     cafes = await res.json();
   } catch (err) {
     console.log('ERROR! fetchCafeList: ', err);
+    cafes = null;
   }
   return cafes;
 }

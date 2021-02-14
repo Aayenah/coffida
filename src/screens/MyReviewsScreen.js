@@ -8,7 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
 import { getPhotoForReview } from '../utility/ReviewHelpers';
 import LoadingScreen from './LoadingScreen';
-// import colors from '../config/colors';
+import colors from '../config/colors';
 import MyReview from '../components/MyReview';
 
 export default function MyReviewsScreen() {
@@ -71,7 +71,7 @@ export default function MyReviewsScreen() {
         {listComponent.length > 0 ? (
           listComponent
         ) : (
-          <Text>You do not have any reviews yet</Text>
+          <Text style={styles.message}>You do not have any reviews yet</Text>
         )}
       </View>
     </ScrollView>
@@ -90,6 +90,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Roboto',
     color: 'black',
+  },
+  message: {
+    fontFamily: 'Roboto',
+    color: colors.bodyText,
+    marginTop: 20,
   },
   list: {
     marginBottom: 40,

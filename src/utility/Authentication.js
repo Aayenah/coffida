@@ -1,21 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  BASE_URL,
-  GET_USER,
-  POST_ADD_USER,
-  POST_LOGIN_USER,
-  POST_LOGOUT_USER,
-  PATCH_UPDATE_USER,
-} from './Endpoints';
+import { BASE_URL } from './Endpoints';
 
 const login = async (email, password) => {
   try {
+    // reset storage
     await AsyncStorage.removeItem('@user_id');
     await AsyncStorage.removeItem('@token');
   } catch (err) {
     console.log('LOGIN: failed to reset storage');
   }
+
   let user = null;
+
+  // prepare payload
   const credentials = { email, password };
   const options = {
     method: 'POST',
@@ -24,9 +21,10 @@ const login = async (email, password) => {
     },
     body: JSON.stringify(credentials),
   };
+  //
 
   try {
-    const res = await fetch(`${BASE_URL}${POST_LOGIN_USER}`, options);
+    const res = await fetch(`${BASE_URL}/user/login`, options);
     if (res.ok) {
       user = await res.json();
       await AsyncStorage.setItem('@user_id', user.id.toString());
@@ -45,12 +43,15 @@ const login = async (email, password) => {
 
 const register = async (firstName, lastName, email, password) => {
   try {
+    // reset storage
     await AsyncStorage.removeItem('@user_id');
     await AsyncStorage.removeItem('@token');
   } catch (err) {
     console.log('REGISTER: failed to reset storage');
   }
   let user = null;
+
+  // prepare payload
   const newUser = {
     first_name: firstName,
     last_name: lastName,
@@ -64,16 +65,13 @@ const register = async (firstName, lastName, email, password) => {
     },
     body: JSON.stringify(newUser),
   };
+  //
 
   try {
-    const res = await fetch(`${BASE_URL}${POST_ADD_USER}`, options);
+    const res = await fetch(`${BASE_URL}/user`, options);
     if (res.ok) {
       user = await res.json();
-      // await AsyncStorage.setItem('@user_id', user.id.toString());
-      // await AsyncStorage.setItem('@token', user.token.toString());
-      // const userInfo = await getUserInfo(user.id);
       console.log(`REGISTERED: ${user.id}`);
-      // await AsyncStorage.setItem('@user', JSON.stringify(userInfo));
     } else {
       console.log(`failed to register: ${res.status} - ${res.statusText}`);
     }
@@ -95,8 +93,7 @@ const logout = async () => {
     await AsyncStorage.removeItem('@user_id');
     await AsyncStorage.removeItem('@token');
     await AsyncStorage.removeItem('@user');
-    const res = await fetch(`${BASE_URL}${POST_LOGOUT_USER}`, options);
-    console.log(res);
+    const res = await fetch(`${BASE_URL}/user/logout`, options);
     console.log('successfully logged out user');
   } catch (err) {
     console.log(`logout function: ${err}`);
@@ -139,7 +136,7 @@ const updateUser = async (firstName, lastName, email, password) => {
   };
 
   try {
-    const res = await fetch(`${BASE_URL}${PATCH_UPDATE_USER}/${id}`, options);
+    const res = await fetch(`${BASE_URL}/user/${id}`, options);
     if (res.ok) {
       await AsyncStorage.setItem('@user_id', id.toString());
       await AsyncStorage.setItem('@token', token.toString());
@@ -168,13 +165,14 @@ const getUserInfo = async (id) => {
     },
   };
   try {
-    const res = await fetch(`${BASE_URL}${GET_USER}/${id}`, options);
+    const res = await fetch(`${BASE_URL}/user/${id}`, options);
     if (res.ok) {
       user = await res.json();
       // console.log(`getUserInfo: ${user.email}`);
     }
   } catch (err) {
     console.log(`login function: ${err}`);
+    user = null;
   }
   return user;
 };

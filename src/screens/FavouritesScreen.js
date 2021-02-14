@@ -48,7 +48,7 @@ export default function FavouritesScreen() {
             favListComponent
           ) : (
             <Text style={styles.message}>
-              You have not added any cafe to your favourites
+              You have not added any cafes to your favourites
             </Text>
           )}
         </View>
