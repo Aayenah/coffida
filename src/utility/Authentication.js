@@ -153,6 +153,7 @@ const updateUser = async (firstName, lastName, email, password) => {
 };
 
 const getUserInfo = async (id) => {
+  console.log('getting user info from server');
   if (!id) {
     console.log(`getUserInfo no id: ${id}`);
     return null;
@@ -167,12 +168,11 @@ const getUserInfo = async (id) => {
   try {
     const res = await fetch(`${BASE_URL}/user/${id}`, options);
     if (res.ok) {
+      console.log('getUserInfo: Response OK');
       user = await res.json();
-      // console.log(`getUserInfo: ${user.email}`);
     }
   } catch (err) {
-    console.log(`login function: ${err}`);
-    user = null;
+    console.log(`getUserInfo: Failed to get user info from server -  ${err}`);
   }
   return user;
 };
@@ -190,21 +190,22 @@ const getUserFromStore = async () => {
 };
 
 const getUserIdFromStorage = async () => {
-  let id = '';
+  console.log('getting user id from storage');
+  let id = null;
   try {
     id = await AsyncStorage.getItem('@user_id');
   } catch (err) {
-    console.log(`getUserId: ${err}`);
+    console.log(`getUserId: Failed to get id from storage - ${err}`);
   }
   return id;
 };
 
 const getUserTokenFromStorage = async () => {
-  let token = '';
+  let token = null;
   try {
     token = await AsyncStorage.getItem('@token');
   } catch (err) {
-    console.log(`getUserToken: ${err}`);
+    console.log(`getUserToken: Failed to get token from storage - ${err}`);
   }
   return token;
 };

@@ -82,15 +82,17 @@ const App = () => {
           console.log(
             `APP: currentUser - ${currentUser.email} - ${currentUser.user_id}`,
           );
+          dispatch({
+            type: 'RESTORE_TOKEN',
+            token: userToken,
+            user: currentUser,
+          });
+        } else {
+          authContext.signOut();
         }
       } catch (err) {
         console.log(`Error restoring token: ${err}`);
       }
-      dispatch({
-        type: 'RESTORE_TOKEN',
-        token: userToken,
-        user: currentUser,
-      });
     };
 
     bootstrapAsync();
@@ -117,6 +119,7 @@ const App = () => {
         return result;
       },
       signOut: async () => {
+        console.log('signing out...');
         try {
           await logout();
         } catch (e) {
