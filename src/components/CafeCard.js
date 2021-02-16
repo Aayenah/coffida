@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable import/named */
+import React, { useEffect, useState, useContext } from 'react';
 import {
   Text,
   StyleSheet,
@@ -11,21 +12,60 @@ import { getDistance, convertDistance } from 'geolib';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
+import { getLocationFromStorage } from '../utility/GeolocationHelpers';
+import { AuthContext } from '../contexts/AuthContext';
 import AverageStars from './AverageStars';
 import Distance from './Distance';
 import AspectRating from './AspectRating';
-import FavouritesButton from './FavouritesButton';
 import * as RootNavigation from '../utility/RootNavigation';
-// eslint-disable-next-line import/named
 import { fetchCafeInfo } from '../utility/CafeHelpers';
 
 const windowWidth = Dimensions.get('window').width;
-export default function CafeCard({ cafe }) {
+export default function CafeCard({ cafe, parentFocused }) {
+  const { findCoordinates } = useContext(AuthContext);
+  const [distance, setDistance] = useState(-1);
+
   function goToCafeScreen() {
     RootNavigation.navigate('Cafe Screen', {
       cafe,
     });
   }
+
+  async function getDistanceInMiles() {
+    let miles = -1;
+    await findCoordinates();
+    const location = await getLocationFromStorage();
+    if (location) {
+      const userCoords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      const cafeCoords = {
+        latitude: cafe.latitude,
+        longitude: cafe.longitude,
+      };
+
+      const meters = getDistance(userCoords, cafeCoords);
+      miles = convertDistance(meters, 'mi');
+    }
+    return miles;
+  }
+
+  useEffect(() => {}, []);
+
+  // useEffect(() => {
+  //   console.log('distance', distance);
+  // }, [distance]);
+
+  useEffect(() => {
+    async function prepareComponent() {
+      if (parentFocused) {
+        const mi = await getDistanceInMiles();
+        setDistance(mi);
+      }
+    }
+    prepareComponent();
+  }, [parentFocused]);
 
   return (
     <TouchableWithoutFeedback onPress={goToCafeScreen}>
@@ -38,8 +78,10 @@ export default function CafeCard({ cafe }) {
             <Text style={styles.cafeName}>{cafe.location_name}</Text>
             <Text> - </Text>
             <Text style={styles.town}>{cafe.location_town}</Text>
+            <View style={styles.distance}>
+              {distance > -1 ? <Distance miles={distance} /> : <Text>-</Text>}
+            </View>
             {/* <Text style={styles.cafeName}>{cafeId}</Text> */}
-            {/* {distance > 0 ? <Distance miles={distance} /> : <Text>-</Text>} */}
             {/* <Distance miles={0} /> */}
           </View>
           <AverageStars
@@ -63,6 +105,7 @@ export default function CafeCard({ cafe }) {
 CafeCard.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   cafe: PropTypes.object.isRequired,
+  parentFocused: PropTypes.bool.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -87,7 +130,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  town: {},
+  distance: {
+    marginLeft: 'auto',
+  },
   body: {
     height: '100%',
     paddingHorizontal: 10,

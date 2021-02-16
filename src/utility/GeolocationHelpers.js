@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // async function saveCoordinates() {
 //   try {
 //     await AsyncStorage.setItem('@lat', currentCoord.lat);
@@ -26,3 +28,16 @@
 //     console.log('LOCATION_DENIED');
 //   }
 // });
+
+async function getLocationFromStorage() {
+  let location = null;
+  try {
+    const json = await AsyncStorage.getItem('@location');
+    location = JSON.parse(json);
+  } catch (err) {
+    console.warn('getLocationFromStorage: ', err);
+  }
+  return location;
+}
+
+module.exports = { getLocationFromStorage };

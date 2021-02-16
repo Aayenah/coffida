@@ -5,6 +5,15 @@ import PropTypes from 'prop-types';
 
 export default function Distance({ miles }) {
   // const concat = `${miles.toFixed(1)} mi`;
+
+  let info = '';
+
+  if (Number.isNaN(miles) || !miles) {
+    info = '--';
+  } else {
+    info = miles < 0 ? '--' : `${miles.toFixed(1)}`;
+  }
+
   return (
     <View style={styles.container}>
       <Icon
@@ -15,7 +24,7 @@ export default function Distance({ miles }) {
         solid
         style={{ marginRight: 3 }}
       />
-      <Text style={styles.value}>-</Text>
+      <Text style={styles.value}>{info}</Text>
     </View>
   );
 }

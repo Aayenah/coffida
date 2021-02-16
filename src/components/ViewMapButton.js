@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
@@ -11,24 +12,30 @@ export default function LoginButton() {
 
   return (
     <Button
-      title="  Login"
-      raised
+      title="  View On Map"
+      type="clear"
       containerStyle={styles.button_container}
       buttonStyle={styles.button}
+      titleStyle={styles.button}
       icon={
-        <Icon name="sign-in-alt" type="font-awesome-5" color="white" solid />
+        <Icon
+          name="map-marker-alt"
+          type="font-awesome-5"
+          color={colors.secondary}
+          solid
+        />
       }
-      onPress={openLoginModal}
+      onPress={() => console.log('map')}
     />
   );
 }
 
 const styles = StyleSheet.create({
   button_container: {
-    width: '80%',
+    width: '50%',
   },
   button: {
-    backgroundColor: colors.primary,
+    color: colors.secondary,
   },
   text: {
     color: 'white',

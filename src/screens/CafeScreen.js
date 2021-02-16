@@ -11,6 +11,7 @@ import ImageHeader from '../components/ImageHeader';
 import CafeTitle from '../components/CafeTitle';
 import AverageStars from '../components/AverageStars';
 import FavouritesButton from '../components/FavouritesButton';
+import ViewMapButton from '../components/ViewMapButton';
 import colors from '../config/colors';
 import ReviewsSection from '../components/ReviewsSection';
 import {
@@ -85,6 +86,9 @@ export default function CafeScreen({ route }) {
           avg={currentCafe.avg_overall_rating}
           total={currentCafe.location_reviews.length}
         />
+        <View style={styles.map_button}>
+          <ViewMapButton />
+        </View>
         <Divider style={styles.divider} />
         <ReviewsSection cafe={currentCafe} />
       </View>
@@ -109,8 +113,13 @@ const styles = StyleSheet.create({
   town: {
     marginBottom: 25,
   },
+  map_button: {
+    marginVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   divider: {
-    marginVertical: 20,
+    marginBottom: 20,
     color: colors.bodyText,
   },
   aspect_row: {

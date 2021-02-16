@@ -1,8 +1,9 @@
 /* eslint-disable import/named */
 import 'react-native-gesture-handler';
-import React, { useReducer, useMemo, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useReducer, useMemo, useEffect, useState } from 'react';
+import { StyleSheet, Alert, PermissionsAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geolocation from 'react-native-geolocation-service';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -30,6 +31,8 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const App = () => {
+  const [locationPerms, setLocationPerms] = useState(false);
+
   const [state, dispatch] = useReducer(
     // eslint-disable-next-line consistent-return
     (prevState, action) => {
@@ -66,37 +69,62 @@ const App = () => {
     },
   );
 
+  async function checkUserData() {
+    let userToken;
+    let id;
+    let currentUser;
+    try {
+      userToken = await AsyncStorage.getItem('@token');
+      console.log(`APP: userToken - ${userToken}`);
+      id = await getUserIdFromStorage();
+      currentUser = await getUserInfo(id);
+      if (currentUser) {
+        console.log(
+          `APP: currentUser - ${currentUser.email} - ${currentUser.user_id}`,
+        );
+        dispatch({
+          type: 'RESTORE_TOKEN',
+          token: userToken,
+          user: currentUser,
+        });
+      }
+    } catch (err) {
+      console.log(`Error restoring token: ${err}`);
+    }
+  }
+
+  async function requestLocationPermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'This app requires access to your location',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'Ok',
+        },
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        return true;
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+    return false;
+  }
+
   useEffect(() => {
     console.log(`APP: isLoading - ${state.isLoading}`);
     console.log(`APP: token - ${state.userToken}`);
-    const bootstrapAsync = async () => {
-      let userToken;
-      let id;
-      let currentUser;
-      try {
-        userToken = await AsyncStorage.getItem('@token');
-        console.log(`APP: userToken - ${userToken}`);
-        id = await getUserIdFromStorage();
-        currentUser = await getUserInfo(id);
-        if (currentUser) {
-          console.log(
-            `APP: currentUser - ${currentUser.email} - ${currentUser.user_id}`,
-          );
-          dispatch({
-            type: 'RESTORE_TOKEN',
-            token: userToken,
-            user: currentUser,
-          });
-        } else {
-          authContext.signOut();
-        }
-      } catch (err) {
-        console.log(`Error restoring token: ${err}`);
-      }
+
+    const prepareComponent = async () => {
+      await checkUserData();
+      // findCoordinates();
     };
 
-    bootstrapAsync();
-    console.log(`APP: isLoading - ${state.isLoading}`);
+    prepareComponent();
   }, []);
 
   const authContext = useMemo(
@@ -135,6 +163,26 @@ const App = () => {
           console.log(`getUser failed: ${e}`);
         }
         return user;
+      },
+      findCoordinates: async () => {
+        if (locationPerms === false) {
+          setLocationPerms(requestLocationPermission());
+        }
+
+        Geolocation.getCurrentPosition(
+          async (position) => {
+            const loc = JSON.stringify(position);
+            await AsyncStorage.setItem('@location', loc);
+          },
+          (error) => {
+            Alert.alert(error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 1000,
+          },
+        );
       },
     }),
     [],

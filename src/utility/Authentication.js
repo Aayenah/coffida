@@ -153,7 +153,6 @@ const updateUser = async (firstName, lastName, email, password) => {
 };
 
 const getUserInfo = async (id) => {
-  console.log('getting user info from server');
   if (!id) {
     console.log(`getUserInfo no id: ${id}`);
     return null;
@@ -168,7 +167,6 @@ const getUserInfo = async (id) => {
   try {
     const res = await fetch(`${BASE_URL}/user/${id}`, options);
     if (res.ok) {
-      console.log('getUserInfo: Response OK');
       user = await res.json();
     }
   } catch (err) {
@@ -182,7 +180,6 @@ const getUserFromStore = async () => {
   try {
     const jsonUser = await AsyncStorage.getItem('@user');
     user = jsonUser !== null ? JSON.parse(jsonUser) : null;
-    // console.log(user);
   } catch (err) {
     console.log(`getUserFromStore: ${err}`);
   }
@@ -190,7 +187,6 @@ const getUserFromStore = async () => {
 };
 
 const getUserIdFromStorage = async () => {
-  console.log('getting user id from storage');
   let id = null;
   try {
     id = await AsyncStorage.getItem('@user_id');

@@ -1,5 +1,5 @@
 /* eslint-disable import/named */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 import { Image } from 'react-native-elements';
 import { getDistance, convertDistance } from 'geolib';
+import { useIsFocused } from '@react-navigation/native';
 import RNLocation from 'react-native-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../contexts/AuthContext';
 import Carousel from '../components/Carousel';
 import colors from '../config/colors';
 import { config, permissions } from '../config/location';
@@ -22,10 +24,12 @@ import {
   MIN_DISTANCE,
 } from '../config/ratings';
 import LoadingScreen from './LoadingScreen';
-import { getUserTokenFromStorage } from '../utility/Authentication';
+import { getLocationFromStorage } from '../utility/GeolocationHelpers';
 import { fetchCafeList } from '../utility/CafeHelpers';
 
 export default function HomeScreen() {
+  const isFocused = useIsFocused();
+  const { findCoordinates } = useContext(AuthContext);
   const [cafes, setCafes] = useState([]);
   // const [nearby, setNearby] = useState([]);
   const [currentCoord, setCurrentCoord] = useState(null);
@@ -49,6 +53,15 @@ export default function HomeScreen() {
     prepareData();
   }, []);
 
+  // useEffect(() => {
+  //   async function prepareLocation() {
+  //     const location = await findCoordinates();
+  //     const loc = await getLocationFromStorage();
+  //     console.log('loc', loc);
+  //   }
+  //   prepareLocation();
+  // }, [isFocused]);
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -57,15 +70,27 @@ export default function HomeScreen() {
     <ScrollView style={{ backgroundColor: 'white' }}>
       <View style={styles.container}>
         <View>
-          <Carousel title="All Cafes" items={cafes} />
+          <Carousel title="All Cafes" items={cafes} parentFocused={isFocused} />
           {topRatedCafes.length > 0 && (
-            <Carousel title="Top Rated" items={topRatedCafes} />
+            <Carousel
+              title="Top Rated"
+              items={topRatedCafes}
+              parentFocused={isFocused}
+            />
           )}
           {highQualityCafes.length > 0 && (
-            <Carousel title="High Quality" items={highQualityCafes} />
+            <Carousel
+              title="High Quality"
+              items={highQualityCafes}
+              parentFocused={isFocused}
+            />
           )}
           {bestPricesCafes.length > 0 && (
-            <Carousel title="Best Prices" items={bestPricesCafes} />
+            <Carousel
+              title="Best Prices"
+              items={bestPricesCafes}
+              parentFocused={isFocused}
+            />
           )}
         </View>
       </View>
