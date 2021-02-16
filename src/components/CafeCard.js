@@ -22,7 +22,6 @@ import { fetchCafeInfo } from '../utility/CafeHelpers';
 
 const windowWidth = Dimensions.get('window').width;
 export default function CafeCard({ cafe, parentFocused }) {
-  const { findCoordinates } = useContext(AuthContext);
   const [distance, setDistance] = useState(-1);
 
   function goToCafeScreen() {
@@ -33,7 +32,6 @@ export default function CafeCard({ cafe, parentFocused }) {
 
   async function getDistanceInMiles() {
     let miles = -1;
-    await findCoordinates();
     const location = await getLocationFromStorage();
     if (location) {
       const userCoords = {
@@ -50,12 +48,6 @@ export default function CafeCard({ cafe, parentFocused }) {
     }
     return miles;
   }
-
-  useEffect(() => {}, []);
-
-  // useEffect(() => {
-  //   console.log('distance', distance);
-  // }, [distance]);
 
   useEffect(() => {
     async function prepareComponent() {

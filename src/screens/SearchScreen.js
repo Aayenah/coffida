@@ -55,7 +55,6 @@ export default function SearchScreen() {
   };
 
   useEffect(() => {
-    console.log('SearchScreen focused? ', isFocused);
     async function prepareComponent() {
       const queryObj = {
         q: query,

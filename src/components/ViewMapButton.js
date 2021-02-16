@@ -1,13 +1,15 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
+import PropTypes from 'prop-types';
 import colors from '../config/colors';
 import * as RootNavigation from '../utility/RootNavigation';
 
-export default function LoginButton() {
-  function openLoginModal() {
-    RootNavigation.navigate('Login Modal');
+export default function ViewMapButton({ cafe }) {
+  function openMapScreen() {
+    RootNavigation.navigate('Map Screen', { cafe });
   }
 
   return (
@@ -25,10 +27,15 @@ export default function LoginButton() {
           solid
         />
       }
-      onPress={() => console.log('map')}
+      onPress={openMapScreen}
     />
   );
 }
+
+ViewMapButton.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  cafe: PropTypes.object.isRequired,
+};
 
 const styles = StyleSheet.create({
   button_container: {

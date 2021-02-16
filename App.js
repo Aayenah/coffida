@@ -31,7 +31,8 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [locationPerms, setLocationPerms] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [permissionGranted, setPermissionGranted] = useState(false);
 
   const [state, dispatch] = useReducer(
     // eslint-disable-next-line consistent-return
@@ -82,15 +83,16 @@ const App = () => {
         console.log(
           `APP: currentUser - ${currentUser.email} - ${currentUser.user_id}`,
         );
-        dispatch({
-          type: 'RESTORE_TOKEN',
-          token: userToken,
-          user: currentUser,
-        });
       }
     } catch (err) {
       console.log(`Error restoring token: ${err}`);
     }
+
+    dispatch({
+      type: 'RESTORE_TOKEN',
+      token: userToken,
+      user: currentUser,
+    });
   }
 
   async function requestLocationPermission() {
@@ -121,11 +123,23 @@ const App = () => {
 
     const prepareComponent = async () => {
       await checkUserData();
-      // findCoordinates();
+      authContext.updateCoordinates();
     };
 
     prepareComponent();
   }, []);
+
+  useEffect(() => {
+    const prepareLocation = async () => {
+      if (location !== null) {
+        const jsonLocation = JSON.stringify(location);
+        await AsyncStorage.setItem('@location', jsonLocation);
+        console.log('location stored: ', location.coords);
+      }
+    };
+
+    prepareLocation();
+  }, [location]);
 
   const authContext = useMemo(
     () => ({
@@ -164,15 +178,17 @@ const App = () => {
         }
         return user;
       },
-      findCoordinates: async () => {
-        if (locationPerms === false) {
-          setLocationPerms(requestLocationPermission());
+      updateCoordinates: () => {
+        if (permissionGranted === false) {
+          setPermissionGranted(requestLocationPermission());
         }
 
         Geolocation.getCurrentPosition(
-          async (position) => {
-            const loc = JSON.stringify(position);
-            await AsyncStorage.setItem('@location', loc);
+          (position) => {
+            setLocation(position);
+            console.log('position: ', position);
+            // const loc = JSON.stringify(position);
+            // await AsyncStorage.setItem('@location', loc);
           },
           (error) => {
             Alert.alert(error.message);
@@ -180,7 +196,7 @@ const App = () => {
           {
             enableHighAccuracy: true,
             timeout: 20000,
-            maximumAge: 1000,
+            maximumAge: 0,
           },
         );
       },

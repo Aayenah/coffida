@@ -52,7 +52,7 @@ export default function LoginModal({ navigation }) {
       />
       <Input
         placeholder="Password"
-        // secureTextEntry
+        secureTextEntry
         leftIcon={
           <Icon name="lock" type="font-awesome-5" color="#424242" solid />
         }

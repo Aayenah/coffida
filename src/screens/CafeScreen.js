@@ -87,7 +87,7 @@ export default function CafeScreen({ route }) {
           total={currentCafe.location_reviews.length}
         />
         <View style={styles.map_button}>
-          <ViewMapButton />
+          <ViewMapButton cafe={currentCafe} />
         </View>
         <Divider style={styles.divider} />
         <ReviewsSection cafe={currentCafe} />

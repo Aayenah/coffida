@@ -6,6 +6,7 @@ import ReviewsScreen from '../screens/ReviewsScreen';
 import AddReviewScreen from '../screens/AddReviewScreen';
 import UpdateReviewScreen from '../screens/UpdateReviewScreen';
 import DeleteReviewScreen from '../screens/DeleteReviewScreen';
+import MapScreen from '../screens/MapScreen';
 import CameraView from '../components/CameraView';
 import PhotoView from '../components/PhotoView';
 
@@ -55,6 +56,11 @@ export default function HomeStack() {
         name="Photo View"
         component={PhotoView}
         options={{ title: 'Review Photo' }}
+      />
+      <Stack.Screen
+        name="Map Screen"
+        component={MapScreen}
+        options={{ title: 'Map View' }}
       />
     </Stack.Navigator>
   );

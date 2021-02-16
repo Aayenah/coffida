@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.13.3",
@@ -25,6 +26,7 @@
     "react-native-gesture-handler": "^1.9.0",
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-location": "^2.5.0",
+    "react-native-maps": "0.27.1",
     "react-native-paper": "^4.7.1",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
@@ -39,9 +41,6 @@
     "@react-native-community/eslint-config": "^1.1.0",
     "babel-jest": "^25.1.0",
     "eslint": "^6.5.1",
-    "jest": "^25.1.0",
-    "metro-react-native-babel-preset": "^0.59.0",
-    "react-test-renderer": "16.13.1",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import": "^2.22.1",
@@ -49,7 +48,11 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "prettier": "^2.2.1"
+    "jest": "^25.1.0",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "patch-package": "^6.2.2",
+    "prettier": "^2.2.1",
+    "react-test-renderer": "16.13.1"
   },
   "jest": {
     "preset": "react-native"
