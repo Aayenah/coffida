@@ -22,7 +22,11 @@ export default function AspectRating({ aspect, rating }) {
 
 AspectRating.propTypes = {
   aspect: PropTypes.string.isRequired,
-  rating: PropTypes.number.isRequired,
+  rating: PropTypes.number,
+};
+
+AspectRating.defaultProps = {
+  rating: '-',
 };
 
 const styles = StyleSheet.create({

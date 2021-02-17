@@ -34,8 +34,13 @@ export default function AverageStars({ avg, total }) {
 }
 
 AverageStars.propTypes = {
-  avg: PropTypes.number.isRequired,
-  total: PropTypes.number.isRequired,
+  avg: PropTypes.number,
+  total: PropTypes.number,
+};
+
+AverageStars.defaultProps = {
+  avg: '-',
+  total: 0,
 };
 
 const styles = StyleSheet.create({

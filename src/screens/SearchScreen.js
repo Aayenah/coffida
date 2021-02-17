@@ -3,7 +3,14 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable import/named */
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { SearchBar, Icon } from 'react-native-elements';
 import { useIsFocused } from '@react-navigation/native';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
@@ -23,10 +30,12 @@ export default function SearchScreen() {
   const [cleanliness, setCleanliness] = useState(0);
   const [searchIn, setSearchIn] = useState('');
   const [cafeList, setCafeList] = useState([]);
+  const [searching, setSearching] = useState(false);
   const [optionsVisible, setOptionsVisible] = useState(false);
   const isFocused = useIsFocused();
 
   async function onSearch() {
+    setSearching(true);
     const queryObj = {
       q: query,
       overall,
@@ -38,6 +47,7 @@ export default function SearchScreen() {
 
     const data = await searchCafes(queryObj);
     setCafeList(data);
+    setSearching(false);
   }
 
   const filterOptions = {
@@ -56,6 +66,7 @@ export default function SearchScreen() {
 
   useEffect(() => {
     async function prepareComponent() {
+      setSearching(true);
       const queryObj = {
         q: query,
         overall,
@@ -66,6 +77,7 @@ export default function SearchScreen() {
       };
       const data = await searchCafes(queryObj);
       setCafeList(data);
+      setSearching(false);
     }
     prepareComponent();
   }, []);
@@ -74,9 +86,13 @@ export default function SearchScreen() {
     setOptionsVisible(!optionsVisible);
   }
 
-  const cafeListComponent = cafeList.map((r) => (
+  let cafeListComponent = cafeList.map((r) => (
     <CafeListItem key={r.location_id} cafe={r} />
   ));
+
+  if (cafeListComponent.length < 1) {
+    cafeListComponent = <Text style={styles.message}>No locations found</Text>;
+  }
 
   return (
     <View>
@@ -102,10 +118,11 @@ export default function SearchScreen() {
       </View>
       <ScrollView style={styles.scroll}>
         <View style={styles.list}>
-          {cafeListComponent.length > 0 ? (
-            cafeListComponent
+          {searching ? (
+            // <Text style={styles.message}>No locations found.</Text>
+            <ActivityIndicator size={50} color={colors.primary} />
           ) : (
-            <Text style={styles.message}>No locations found.</Text>
+            cafeListComponent
           )}
         </View>
       </ScrollView>

@@ -35,7 +35,6 @@ export default function MyReviewsScreen() {
   }
 
   useEffect(() => {
-    console.log('MyReviewsScreen focused? ', isFocused);
     async function prepareComponent() {
       await updateUserData();
     }

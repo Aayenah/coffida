@@ -12,7 +12,10 @@ import { getDistance, convertDistance } from 'geolib';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import { getLocationFromStorage } from '../utility/GeolocationHelpers';
+import {
+  getLocationFromStorage,
+  getDistanceInMiles,
+} from '../utility/GeolocationHelpers';
 import { AuthContext } from '../contexts/AuthContext';
 import AverageStars from './AverageStars';
 import Distance from './Distance';
@@ -30,29 +33,14 @@ export default function CafeCard({ cafe, parentFocused }) {
     });
   }
 
-  async function getDistanceInMiles() {
-    let miles = -1;
-    const location = await getLocationFromStorage();
-    if (location) {
-      const userCoords = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      };
-      const cafeCoords = {
-        latitude: cafe.latitude,
-        longitude: cafe.longitude,
-      };
-
-      const meters = getDistance(userCoords, cafeCoords);
-      miles = convertDistance(meters, 'mi');
-    }
-    return miles;
-  }
-
   useEffect(() => {
     async function prepareComponent() {
       if (parentFocused) {
-        const mi = await getDistanceInMiles();
+        const cafeCoords = {
+          latitude: cafe.latitude,
+          longitude: cafe.longitude,
+        };
+        const mi = await getDistanceInMiles(cafeCoords);
         setDistance(mi);
       }
     }

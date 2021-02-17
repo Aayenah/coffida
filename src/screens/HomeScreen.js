@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable import/named */
 import React, { useEffect, useState, useContext } from 'react';
 import {
@@ -24,7 +26,10 @@ import {
   MIN_DISTANCE,
 } from '../config/ratings';
 import LoadingScreen from './LoadingScreen';
-import { getLocationFromStorage } from '../utility/GeolocationHelpers';
+import {
+  getLocationFromStorage,
+  getDistanceInMiles,
+} from '../utility/GeolocationHelpers';
 import { fetchCafeList } from '../utility/CafeHelpers';
 
 export default function HomeScreen() {
@@ -32,7 +37,6 @@ export default function HomeScreen() {
   const { findCoordinates } = useContext(AuthContext);
   const [cafes, setCafes] = useState([]);
   // const [nearby, setNearby] = useState([]);
-  const [currentCoord, setCurrentCoord] = useState(null);
   const [loading, setLoading] = useState(false);
   const topRatedCafes = cafes.filter(
     (c) => c.avg_overall_rating >= MIN_OVERALL,
@@ -41,26 +45,27 @@ export default function HomeScreen() {
     (c) => c.avg_quality_rating >= MIN_QUALITY,
   );
   const bestPricesCafes = cafes.filter((c) => c.avg_price_rating >= MIN_PRICE);
-  // let nearbyCafes = cafes.filter((c) => c.distance_from_user < 100);
 
   useEffect(() => {
     async function prepareData() {
       setLoading(true);
       const cafeList = await fetchCafeList();
+
+      for (const c of cafeList) {
+        const cafeCoords = {
+          latitude: c.latitude,
+          longitude: c.longitude,
+        };
+        c.distance = await getDistanceInMiles(cafeCoords);
+      }
+
       setCafes(cafeList);
       setLoading(false);
     }
     prepareData();
   }, []);
 
-  // useEffect(() => {
-  //   async function prepareLocation() {
-  //     const location = await findCoordinates();
-  //     const loc = await getLocationFromStorage();
-  //     console.log('loc', loc);
-  //   }
-  //   prepareLocation();
-  // }, [isFocused]);
+  const nearbyCafes = cafes.filter((c) => c.distance < 5);
 
   if (loading) {
     return <LoadingScreen />;
@@ -70,7 +75,14 @@ export default function HomeScreen() {
     <ScrollView style={{ backgroundColor: 'white' }}>
       <View style={styles.container}>
         <View>
-          <Carousel title="All Cafes" items={cafes} parentFocused={isFocused} />
+          {/* <Carousel title="All Cafes" items={cafes} parentFocused={isFocused} /> */}
+          {nearbyCafes.length > 0 && (
+            <Carousel
+              title="Nearby"
+              items={nearbyCafes}
+              parentFocused={isFocused}
+            />
+          )}
           {topRatedCafes.length > 0 && (
             <Carousel
               title="Top Rated"
@@ -102,7 +114,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     paddingLeft: 10,
-    paddingTop: 50,
+    paddingTop: 20,
     backgroundColor: 'white',
   },
   header: {
