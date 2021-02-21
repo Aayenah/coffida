@@ -104,12 +104,12 @@ CafeListItem.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  item: {
+    borderBottomWidth: 0.5,
+  },
   photo: {
     width: 70,
     height: 70,
-  },
-  favIcon: {
-    margin: 10,
   },
   fav_container: {
     marginLeft: 'auto',

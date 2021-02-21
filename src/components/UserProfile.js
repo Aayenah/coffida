@@ -102,7 +102,7 @@ export default function UserProfile() {
         <Button
           title="  Save"
           raised
-          containerStyle={styles.button_container}
+          containerStyle={styles.save_container}
           buttonStyle={styles.save}
           onPress={initiateSave}
           loading={buttonLoading}
@@ -119,7 +119,7 @@ export default function UserProfile() {
         <Button
           title="Reset"
           raised
-          containerStyle={styles.button_container}
+          containerStyle={styles.reset_container}
           buttonStyle={styles.reset}
           onPress={resetProfile}
         />
@@ -160,7 +160,11 @@ const styles = StyleSheet.create({
   save: {
     backgroundColor: colors.primary,
   },
-  button_container: {
+  save_container: {
+    marginHorizontal: 10,
+    width: 80,
+  },
+  reset_container: {
     marginHorizontal: 10,
   },
   reset: {

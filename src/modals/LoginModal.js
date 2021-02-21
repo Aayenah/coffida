@@ -1,14 +1,10 @@
-/* eslint-disable react/prop-types */
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 import colors from '../config/colors';
-// eslint-disable-next-line
-// import { login } from '../utility/Authentication';
-import * as RootNavigation from '../utility/RootNavigation';
 import { AuthContext } from '../contexts/AuthContext';
 
-export default function LoginModal({ navigation }) {
+export default function LoginModal() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [buttonLoading, setButtonLoading] = useState(false);

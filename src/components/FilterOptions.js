@@ -102,8 +102,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    backgroundColor: 'floralwhite',
+    backgroundColor: '#f7f7f7',
     paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primary,
   },
   slider_row: {
     flexDirection: 'row',

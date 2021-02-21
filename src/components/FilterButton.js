@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
@@ -9,14 +10,14 @@ export default function FilterButton({ onFilter }) {
     <Button
       title="  Filter"
       type="clear"
-      titleStyle={{ color: colors.primary }}
+      titleStyle={styles.title}
       icon={
         <Icon
           name="filter"
           type="font-awesome-5"
-          color={colors.primary}
+          color="white"
           solid
-          size={14}
+          size={16}
         />
       }
       onPress={onFilter}
@@ -29,3 +30,10 @@ export default function FilterButton({ onFilter }) {
 FilterButton.propTypes = {
   onFilter: PropTypes.func.isRequired,
 };
+
+const styles = StyleSheet.create({
+  title: {
+    color: 'white',
+    fontSize: 14,
+  },
+});

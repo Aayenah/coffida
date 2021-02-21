@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable import/named */
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -6,10 +7,9 @@ import { Input, Icon, Button } from 'react-native-elements';
 import colors from '../config/colors';
 import { AuthContext } from '../contexts/AuthContext';
 import { isPasswordValid } from '../utility/InputValidator';
-// eslint-disable-next-line import/named
 import { updateUser } from '../utility/Authentication';
 
-export default function PasswordModal() {
+export default function PasswordModal({ navigation }) {
   const { getUser } = useContext(AuthContext);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -41,6 +41,7 @@ export default function PasswordModal() {
     const result = await updateUser(firstName, lastName, email, password1);
     if (result === 'success') {
       setMessage('Successfully updated password');
+      navigation.goBack();
     }
     setButtonLoading(false);
     return console.log('PASSWORD SAVE: ', result);
@@ -106,5 +107,8 @@ const styles = StyleSheet.create({
   },
   save: {
     backgroundColor: colors.primary,
+  },
+  button_container: {
+    width: 80,
   },
 });

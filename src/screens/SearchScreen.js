@@ -77,7 +77,14 @@ export default function SearchScreen() {
     setOptionsVisible(!optionsVisible);
   }
 
-  let cafeListComponent = cafeList.map((r) => (
+  const sortedList = cafeList.sort((a, b) => {
+    // sort by location name ascending
+    if (a.location_name < b.location_name) return -1;
+    if (a.location_name > b.location_name) return 1;
+    return 0;
+  });
+
+  let cafeListComponent = sortedList.map((r) => (
     <CafeListItem key={r.location_id} cafe={r} />
   ));
 
@@ -98,9 +105,11 @@ export default function SearchScreen() {
           inputContainerStyle={styles.input_container}
           inputStyle={styles.input}
         />
-        <View style={styles.filter_row}>
+        <View style={styles.filter_icon}>
           <FilterButton onFilter={onFilter} />
         </View>
+      </View>
+      <View style={styles.options}>
         {optionsVisible && (
           <View style={styles.options}>
             <FilterOptions options={filterOptions} />
@@ -141,6 +150,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    paddingRight: 10,
     borderBottomWidth: 1,
     borderBottomColor: colors.primary,
   },
@@ -148,6 +162,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderTopWidth: 0,
     borderBottomWidth: 0,
+    width: '80%',
   },
   input_container: {
     backgroundColor: 'white',
@@ -158,11 +173,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.bodyText,
   },
-  filter_row: {
-    backgroundColor: 'floralwhite',
-    flexDirection: 'row',
+  filter_icon: {
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  filter_label: {
+    color: 'white',
+    fontSize: 14,
   },
   list: {
     marginBottom: 100,

@@ -30,7 +30,14 @@ export default function FavouritesScreen() {
     return <LoadingScreen />;
   }
 
-  const favListComponent = favList.map((r) => (
+  const sortedList = favList.sort((a, b) => {
+    // sort by location name ascending
+    if (a.location_name < b.location_name) return -1;
+    if (a.location_name > b.location_name) return 1;
+    return 0;
+  });
+
+  const favListComponent = sortedList.map((r) => (
     <CafeListItem key={r.location_id} cafe={r} />
   ));
 
@@ -100,6 +107,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   list: {
-    marginBottom: 100,
+    marginBottom: 50,
   },
 });

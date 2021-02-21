@@ -69,27 +69,6 @@ export default function MyReview({ cafe, review, returnScreen }) {
     RootNavigation.navigate('Delete Review Screen', { cafe, review });
   }
 
-  // async function onDeleteReview() {
-  //   Alert.alert('Warning', 'Are you sure you want to delete this review?', [
-  //     {
-  //       text: 'No',
-  //     },
-  //     {
-  //       text: 'Yes',
-  //       onPress: async () => {
-  //         const res = await deleteReview(cafe.location_id, review.review_id);
-  //         if (res.ok) {
-  //           // Toast.show('Review deleted');
-  //           RootNavigation.navigate('Delete Reviews Screen');
-  //           Alert.alert('Review deleted');
-  //         } else {
-  //           Alert.alert('Error', `Failed to delete review - ${res?.status}`);
-  //         }
-  //       },
-  //     },
-  //   ]);
-  // }
-
   useEffect(() => {
     async function prepareComponent() {
       setLoading(true);
@@ -129,7 +108,7 @@ export default function MyReview({ cafe, review, returnScreen }) {
               ratingColor={colors.primary}
               ratingTextColor={colors.secondary}
               ratingBackgroundColor="silver"
-              tintColor="white"
+              tintColor="#f7f7f7"
               imageSize={24}
               style={styles.stars}
             />
@@ -181,7 +160,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     marginVertical: 20,
     paddingTop: 2,
-    borderColor: 'lightgrey',
+    backgroundColor: '#f7f7f7',
   },
   user_row: {
     flexDirection: 'row',
