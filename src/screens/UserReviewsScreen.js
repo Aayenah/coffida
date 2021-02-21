@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 // eslint-disable-next-line import/named
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
-import { AuthContext } from '../contexts/AuthContext';
 import CafeReview from '../components/CafeReview';
 import LoadingScreen from './LoadingScreen';
-import colors from '../config/colors';
 
 export default function UserReviewsScreen() {
   const [user, setUser] = useState(null);

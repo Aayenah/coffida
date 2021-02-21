@@ -7,14 +7,12 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import CafeReview from '../components/CafeReview';
 import LoadingScreen from './LoadingScreen';
-import { fetchCafeList, fetchCafeInfo } from '../utility/CafeHelpers';
-import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
+import { fetchCafeInfo } from '../utility/CafeHelpers';
 import { getPhotoForReview } from '../utility/ReviewHelpers';
 
 export default function ReviewsScreen({ route }) {
   const { cafe } = route.params;
   const [currentCafe, setCurrentCafe] = useState(cafe);
-  const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
 
   async function updateCafeData() {

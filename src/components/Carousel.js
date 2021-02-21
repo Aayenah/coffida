@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FlatList, View, StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import CafeCard from './CafeCard';

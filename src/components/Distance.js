@@ -4,8 +4,6 @@ import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 
 export default function Distance({ miles }) {
-  // const concat = `${miles.toFixed(1)} mi`;
-
   let info = '';
 
   if (Number.isNaN(miles) || !miles) {
@@ -23,6 +21,7 @@ export default function Distance({ miles }) {
         size={11}
         solid
         style={{ marginRight: 3 }}
+        accessibilityLabel="Map marker icon"
       />
       <Text style={styles.value}>{info}</Text>
     </View>

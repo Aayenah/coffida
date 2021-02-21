@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Button } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
 
@@ -11,6 +11,9 @@ export default function AddPhotoButton({ openCameraView }) {
       color={colors.secondary}
       size={16}
       onPress={openCameraView}
+      accessibilityLabel="Add photo button"
+      accessibilityHint="Open camera to take photo for review"
+      accessibilityRole="button"
     />
   );
 }

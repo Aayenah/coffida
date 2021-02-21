@@ -1,29 +1,12 @@
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable import/named */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
-import { likeReview, unlikeReview } from '../utility/ReviewHelpers';
 
 export default function LikeButton({ isLiked, onLike }) {
-  // const [isPressed, setIsPressed] = useState(false);
-
-  // useEffect(() => {}, []);
-
-  // async function onLike() {
-  //   if (isPressed) {
-  //     const res = await unlikeReview(locationId, reviewId);
-  //     console.log('unlike res: ', res?.ok);
-  //   } else {
-  //     const res = await likeReview(locationId, reviewId);
-  //     console.log('like res: ', res?.ok);
-  //   }
-
-  //   setIsPressed(!isPressed);
-  // }
-
   return isLiked ? (
     <Button
       title="Liked"
@@ -42,6 +25,8 @@ export default function LikeButton({ isLiked, onLike }) {
         />
       }
       onPress={onLike}
+      accessibilityHint="Unlike a review"
+      accessibilityRole="button"
     />
   ) : (
     <Button
@@ -59,6 +44,8 @@ export default function LikeButton({ isLiked, onLike }) {
         />
       }
       onPress={onLike}
+      accessibilityHint="Like a review"
+      accessibilityRole="button"
     />
   );
 }

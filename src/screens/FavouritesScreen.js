@@ -1,13 +1,8 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable react/prop-types */
 /* eslint-disable import/named */
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
-import { SearchBar, Icon } from 'react-native-elements';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
-import { searchCafes } from '../utility/SearchHelpers';
 import LoadingScreen from './LoadingScreen';
 import colors from '../config/colors';
 import CafeListItem from '../components/CafeListItem';

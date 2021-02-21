@@ -1,7 +1,7 @@
 /* eslint-disable import/named */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { RNCamera } from 'react-native-camera';
 import { addPhotoToReview } from '../utility/ReviewHelpers';
@@ -44,6 +44,9 @@ export default function CameraView({ route, navigation }) {
         size={14}
         raised
         onPress={() => navigation.goBack()}
+        accessibilityLabel="Close camera"
+        accessibilityHint="Navigate back to reviews screen"
+        accessibilityRole="button"
       />
       <RNCamera
         style={styles.preview}
@@ -76,6 +79,9 @@ export default function CameraView({ route, navigation }) {
                 solid
                 disabled={loading}
                 onPress={() => takePicture(camera)}
+                accessibilityLabel="Take picture"
+                accessibilityHint="Take a picture and go back to reviews screen"
+                accessibilityRole="button"
               />
             </View>
           );

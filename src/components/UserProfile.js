@@ -1,10 +1,10 @@
+/* eslint-disable import/named */
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 import { AuthContext } from '../contexts/AuthContext';
 import { isEmailValid, isNameValid } from '../utility/InputValidator';
-// eslint-disable-next-line import/named
 import { updateUser } from '../utility/Authentication';
 import LogoutButton from './LogoutButton';
 import colors from '../config/colors';

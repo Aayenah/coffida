@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
-import { Icon, Button } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import colors from '../config/colors';
-// import { logout } from '../utility/Authentication';
 import { AuthContext } from '../contexts/AuthContext';
 
 export default function LoginButton() {
@@ -16,6 +15,8 @@ export default function LoginButton() {
       buttonStyle={styles.button}
       titleStyle={styles.button}
       onPress={signOut}
+      accessibilityHint="Logout from application and navigate to authentication screen"
+      accessibilityRole="button"
     />
   );
 }

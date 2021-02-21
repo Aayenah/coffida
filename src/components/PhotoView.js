@@ -1,9 +1,8 @@
 /* eslint-disable import/named */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, ImageBackground } from 'react-native';
-import { Icon, Image } from 'react-native-elements';
-import ImageViewer from 'react-native-image-zoom-viewer';
+import React from 'react';
+import { View, StyleSheet, Alert, ImageBackground } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { deletePhotoFromReview } from '../utility/ReviewHelpers';
 import colors from '../config/colors';
 

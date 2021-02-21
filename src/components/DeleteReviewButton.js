@@ -12,6 +12,7 @@ export default function DeleteReviewButton({ onDelete }) {
       containerStyle={styles.button_container}
       buttonStyle={styles.button}
       onPress={onDelete}
+      accessibilityRole="button"
     />
   );
 }

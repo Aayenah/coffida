@@ -60,6 +60,10 @@ export default function CafeListItem({ cafe }) {
 
   return (
     <ListItem
+      accessible
+      accessibilityLabel="Cafe list item"
+      accessibilityHint="Navigate to cafe screen"
+      accessibilityRole="imagebutton"
       bottomDivider
       onPress={goToCafeScreen}
       containerStyle={styles.item}

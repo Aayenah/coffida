@@ -10,7 +10,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
 import SearchScreen from './src/screens/SearchScreen';
 import FavouritesScreen from './src/screens/FavouritesScreen';
-import UserReviewsScreen from './src/screens/UserReviewsScreen';
 import HomeStack from './src/stacks/HomeStack';
 import { navigationRef } from './src/utility/RootNavigation';
 import colors from './src/config/colors';

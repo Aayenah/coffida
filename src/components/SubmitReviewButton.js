@@ -1,11 +1,8 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable import/named */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
-import { Icon, Button } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
-import { likeReview, unlikeReview } from '../utility/ReviewHelpers';
 
 export default function SubmitReviewButton({ onSubmit }) {
   return (
@@ -15,6 +12,8 @@ export default function SubmitReviewButton({ onSubmit }) {
       containerStyle={styles.button_container}
       buttonStyle={styles.button}
       onPress={onSubmit}
+      accessibilityHint="Submit a review"
+      accessibilityRole="button"
     />
   );
 }

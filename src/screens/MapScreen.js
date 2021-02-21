@@ -1,11 +1,10 @@
 /* eslint-disable import/named */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { getLocationFromStorage } from '../utility/GeolocationHelpers';
 import LoadingScreen from './LoadingScreen';
-import colors from '../config/colors';
 
 export default function MapScreen({ route }) {
   const { cafe } = route.params;
@@ -67,15 +66,10 @@ export default function MapScreen({ route }) {
 
 const styles = StyleSheet.create({
   container: {
-    // flexDirection: 'column',
-    // justifyContent: 'center',
-    // alignItems: 'center',
     height: '100%',
     width: '100%',
-    // backgroundColor: 'blue',
   },
   map: {
     flex: 1,
-    // height: 300,
   },
 });

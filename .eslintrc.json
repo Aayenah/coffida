@@ -31,6 +31,7 @@
     "arrow-body-style": "off",
     "no-use-before-define": ["error", { "functions": true, "classes": true, "variables": false }],
     "no-unused-vars": "warn",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "no-console": "off"
   }
 }

@@ -1,12 +1,6 @@
 /* eslint-disable import/named */
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { Card, Rating, Image } from 'react-native-elements';
 import Toast from 'react-native-simple-toast';
 import PropTypes from 'prop-types';
@@ -18,7 +12,6 @@ import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
 import {
   likeReview,
   unlikeReview,
-  deleteReview,
   getPhotoForReview,
 } from '../utility/ReviewHelpers';
 import AddPhotoButton from './AddPhotoButton';
@@ -126,7 +119,7 @@ export default function CafeReview({ cafe, review }) {
   }
 
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback accessibilityLabel="Card that displays review details">
       <Card containerStyle={styles.card}>
         <View style={styles.user_row}>
           <Text style={styles.menu}>{`Review ID: ${review.review_id}`}</Text>
@@ -148,7 +141,7 @@ export default function CafeReview({ cafe, review }) {
               ratingColor={colors.primary}
               ratingTextColor={colors.secondary}
               ratingBackgroundColor="silver"
-              tintColor="white"
+              tintColor="#f7f7f7"
               imageSize={24}
               style={styles.stars}
             />
@@ -169,6 +162,9 @@ export default function CafeReview({ cafe, review }) {
                 style={{ width: '100%', height: 200 }}
                 resizeMode="contain"
                 onPress={onViewPhoto}
+                accessibilityLabel="Review photo"
+                accessibilityHint="Open photo in a new screen"
+                accessibilityRole="imagebutton"
               />
             </View>
           )}
@@ -199,7 +195,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     marginVertical: 20,
     paddingTop: 2,
-    borderColor: 'lightgrey',
+    // borderColor: 'lightgrey',
+    backgroundColor: '#f7f7f7',
   },
   user_row: {
     flexDirection: 'row',

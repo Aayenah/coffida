@@ -1,11 +1,10 @@
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable import/named */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
-import { likeReview, unlikeReview } from '../utility/ReviewHelpers';
 
 export default function AddReviewButton({ onAdd }) {
   return (
@@ -24,6 +23,10 @@ export default function AddReviewButton({ onAdd }) {
         />
       }
       onPress={onAdd}
+      accessible
+      accessibilityLabel="Add review"
+      accessibilityHint="Add a review to cafe"
+      accessibilityRole="button"
     />
   );
 }

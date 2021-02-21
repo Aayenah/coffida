@@ -2,13 +2,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import {
-  Input,
-  Icon,
-  Button,
-  Slider,
-  ButtonGroup,
-} from 'react-native-elements';
+import { Slider, ButtonGroup } from 'react-native-elements';
 import colors from '../config/colors';
 import ApplyFilterButton from './ApplyFilterButton';
 

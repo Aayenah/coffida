@@ -1,26 +1,23 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import LogoutButton from '../components/LogoutButton';
-// eslint-disable-next-line import/named
-import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
+import { View, StyleSheet } from 'react-native';
 import { AuthContext } from '../contexts/AuthContext';
 import UserProfile from '../components/UserProfile';
 import LoadingScreen from './LoadingScreen';
-import colors from '../config/colors';
 
 export default function AccountScreen() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { getUser } = useContext(AuthContext);
 
   useEffect(() => {
+    setLoading(true);
     getUser().then((value) => {
-      // console.log('ACCOUNTSCREEN', value);
       setUser(value);
+      setLoading(false);
     });
   }, []);
 
-  if (!user) {
+  if (loading) {
     return <LoadingScreen />;
   }
 

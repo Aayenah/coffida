@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Button } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
 
@@ -13,6 +13,9 @@ export default function FavouritesButton({ isFav, onFav, size }) {
       raised
       solid={isFav}
       onPress={onFav}
+      accessibilityLabel="Favourites button"
+      accessibilityHint="Add cafe to favourites"
+      accessibilityRole="button"
     />
   );
 }

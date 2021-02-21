@@ -1,5 +1,5 @@
 /* eslint-disable import/named */
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   StyleSheet,
@@ -8,20 +8,13 @@ import {
   Dimensions,
 } from 'react-native';
 import { Card } from 'react-native-elements';
-import { getDistance, convertDistance } from 'geolib';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {
-  getLocationFromStorage,
-  getDistanceInMiles,
-} from '../utility/GeolocationHelpers';
-import { AuthContext } from '../contexts/AuthContext';
+import { getDistanceInMiles } from '../utility/GeolocationHelpers';
 import AverageStars from './AverageStars';
 import Distance from './Distance';
 import AspectRating from './AspectRating';
 import * as RootNavigation from '../utility/RootNavigation';
-import { fetchCafeInfo } from '../utility/CafeHelpers';
 
 const windowWidth = Dimensions.get('window').width;
 export default function CafeCard({ cafe, parentFocused }) {
@@ -48,7 +41,13 @@ export default function CafeCard({ cafe, parentFocused }) {
   }, [parentFocused]);
 
   return (
-    <TouchableWithoutFeedback onPress={goToCafeScreen}>
+    <TouchableWithoutFeedback
+      accessible
+      accessibilityLabel="Cafe card"
+      accessibilityHint="Navigate to cafe screen"
+      accessibilityRole="imagebutton"
+      onPress={goToCafeScreen}
+    >
       <Card containerStyle={styles.card}>
         <ImageBackground source={{ uri: cafe.photo_path }} style={styles.img}>
           {/* <FavouritesButton /> */}

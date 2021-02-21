@@ -1,6 +1,3 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable react/prop-types */
 /* eslint-disable import/named */
 import React, { useEffect, useState } from 'react';
 import {
@@ -8,16 +5,11 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
-import { SearchBar, Icon } from 'react-native-elements';
-import { useIsFocused } from '@react-navigation/native';
-import { getUserInfo, getUserIdFromStorage } from '../utility/Authentication';
+import { SearchBar } from 'react-native-elements';
 import { searchCafes } from '../utility/SearchHelpers';
-import LoadingScreen from './LoadingScreen';
 import colors from '../config/colors';
-import MyReview from '../components/MyReview';
 import CafeListItem from '../components/CafeListItem';
 import FilterButton from '../components/FilterButton';
 import FilterOptions from '../components/FilterOptions';
@@ -32,7 +24,6 @@ export default function SearchScreen() {
   const [cafeList, setCafeList] = useState([]);
   const [searching, setSearching] = useState(false);
   const [optionsVisible, setOptionsVisible] = useState(false);
-  const isFocused = useIsFocused();
 
   async function onSearch() {
     setSearching(true);

@@ -1,10 +1,9 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Rating, Divider, Button, Icon } from 'react-native-elements';
+import { Rating, Button, Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
-import CafeReview from './CafeReview';
 import AspectRatingColumn from './AspectRatingColumn';
 import * as RootNavigation from '../utility/RootNavigation';
 import AddReviewButton from './AddReviewButton';
@@ -24,6 +23,7 @@ export default function ReviewsSection({ cafe }) {
   if (Number.isNaN(cafe.avg_overall_rating) || !cafe.avg_overall_rating) {
     ratingString = 'No Reviews';
   } else {
+    // eslint-disable-next-line operator-linebreak
     ratingString =
       cafe.avg_overall_rating < 1
         ? 'No Reviews'
@@ -77,6 +77,8 @@ export default function ReviewsSection({ cafe }) {
           />
         }
         onPress={goToAllReviews}
+        accessibilityHint="Navigate to all reviews screen"
+        accessibilityRole="button"
       />
       <View style={styles.add_row}>
         <AddReviewButton onAdd={onAdd} />

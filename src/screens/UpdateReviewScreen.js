@@ -12,7 +12,6 @@ import { updateReview } from '../utility/ReviewHelpers';
 export default function UpdateReviewScreen({ route, navigation }) {
   const [review, setReview] = useState(route.params.review);
   const [cafe, setCafe] = useState(route.params.cafe);
-  // const { returnScreen } = route.params;
   const [overall, setOverall] = useState(review.overall_rating);
   const [quality, setQuality] = useState(review.quality_rating);
   const [price, setPrice] = useState(review.price_rating);
@@ -51,7 +50,6 @@ export default function UpdateReviewScreen({ route, navigation }) {
     );
 
     if (res.ok) {
-      // navigation.navigate(returnScreen);
       navigation.goBack();
     } else {
       setError(`Failed to update review - ${res?.status}`);

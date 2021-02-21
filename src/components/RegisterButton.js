@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import colors from '../config/colors';
@@ -26,6 +26,8 @@ export default function RegisterButton() {
         />
       }
       onPress={openRegisterModal}
+      accessibilityHint="Create an account"
+      accessibilityRole="button"
     />
   );
 }

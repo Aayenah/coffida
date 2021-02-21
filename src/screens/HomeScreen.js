@@ -1,24 +1,11 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable import/named */
-import React, { useEffect, useState, useContext } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  Text,
-  ActivityIndicator,
-} from 'react-native';
-import { Image } from 'react-native-elements';
-import { getDistance, convertDistance } from 'geolib';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import RNLocation from 'react-native-location';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthContext } from '../contexts/AuthContext';
 import Carousel from '../components/Carousel';
 import colors from '../config/colors';
-import { config, permissions } from '../config/location';
 import {
   MIN_OVERALL,
   MIN_QUALITY,
@@ -26,17 +13,12 @@ import {
   MIN_DISTANCE,
 } from '../config/ratings';
 import LoadingScreen from './LoadingScreen';
-import {
-  getLocationFromStorage,
-  getDistanceInMiles,
-} from '../utility/GeolocationHelpers';
+import { getDistanceInMiles } from '../utility/GeolocationHelpers';
 import { fetchCafeList } from '../utility/CafeHelpers';
 
 export default function HomeScreen() {
   const isFocused = useIsFocused();
-  const { findCoordinates } = useContext(AuthContext);
   const [cafes, setCafes] = useState([]);
-  // const [nearby, setNearby] = useState([]);
   const [loading, setLoading] = useState(false);
   const topRatedCafes = cafes.filter(
     (c) => c.avg_overall_rating >= MIN_OVERALL,
@@ -65,7 +47,7 @@ export default function HomeScreen() {
     prepareData();
   }, []);
 
-  const nearbyCafes = cafes.filter((c) => c.distance < 5);
+  const nearbyCafes = cafes.filter((c) => c.distance < MIN_DISTANCE);
 
   if (loading) {
     return <LoadingScreen />;

@@ -11,6 +11,8 @@ export default function UpdateReviewButton({ onUpdate }) {
       color={colors.secondary}
       size={16}
       onPress={onUpdate}
+      accessibilityHint="Update a review"
+      accessibilityRole="button"
     />
   );
 }

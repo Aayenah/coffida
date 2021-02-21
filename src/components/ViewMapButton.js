@@ -28,6 +28,8 @@ export default function ViewMapButton({ cafe }) {
         />
       }
       onPress={openMapScreen}
+      accessibilityHint="Show cafe on map"
+      accessibilityRole="button"
     />
   );
 }

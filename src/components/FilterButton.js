@@ -1,10 +1,8 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
-import { Input, Icon, Button } from 'react-native-elements';
+import React from 'react';
+import { Icon, Button } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import colors from '../config/colors';
-import * as RootNavigation from '../utility/RootNavigation';
 
 export default function FilterButton({ onFilter }) {
   return (
@@ -22,6 +20,8 @@ export default function FilterButton({ onFilter }) {
         />
       }
       onPress={onFilter}
+      accessibilityHint="Show or hide filter options"
+      accessibilityRole="button"
     />
   );
 }

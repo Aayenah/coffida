@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import PropTypes from 'prop-types';
@@ -12,6 +12,10 @@ export default function ApplyFilterButton({ onApply }) {
       containerStyle={styles.button_container}
       buttonStyle={styles.button}
       onPress={onApply}
+      accessible
+      accessibilityLabel="Apply filter"
+      accessibilityHint="Apply filter with chosen parameters"
+      accessibilityRole="button"
     />
   );
 }

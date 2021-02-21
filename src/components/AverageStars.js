@@ -24,10 +24,30 @@ export default function AverageStars({ avg, total }) {
         color={colors.primary}
         size={14}
         solid
+        accessible
+        accessibilityLabel="Star icon"
+        accessibilityHint="Star icon"
+        accessibilityRole="none"
       />
       <View style={styles.row}>
-        <Text style={styles.rating}>{avgString}</Text>
-        <Text style={styles.total}>{count}</Text>
+        <Text
+          style={styles.rating}
+          accessible
+          accessibilityLabel="Average stars"
+          accessibilityHint="Average star rating"
+          accessibilityRole="text"
+        >
+          {avgString}
+        </Text>
+        <Text
+          style={styles.total}
+          accessible
+          accessibilityLabel="Total reviews"
+          accessibilityHint="Total count for number of reviews this cafe has"
+          accessibilityRole="text"
+        >
+          {count}
+        </Text>
       </View>
     </View>
   );

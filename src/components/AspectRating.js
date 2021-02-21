@@ -14,8 +14,20 @@ export default function AspectRating({ aspect, rating }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.aspect}>{aspect}</Text>
-      <Text style={styles.rating}>{info}</Text>
+      <Text
+        style={styles.aspect}
+        accessibilityLabel="Aspect label"
+        accessibilityRole="text"
+      >
+        {aspect}
+      </Text>
+      <Text
+        style={styles.rating}
+        accessibilityLabel="Aspect rating"
+        accessibilityRole="text"
+      >
+        {info}
+      </Text>
     </View>
   );
 }

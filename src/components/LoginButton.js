@@ -19,6 +19,8 @@ export default function LoginButton() {
         <Icon name="sign-in-alt" type="font-awesome-5" color="white" solid />
       }
       onPress={openLoginModal}
+      accessibilityHint="Initiate login"
+      accessibilityRole="button"
     />
   );
 }

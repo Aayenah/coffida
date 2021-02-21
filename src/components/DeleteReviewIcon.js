@@ -11,6 +11,8 @@ export default function DeleteReviewIcon({ onDelete }) {
       color={colors.secondary}
       size={16}
       onPress={onDelete}
+      accessibilityLabel="Delete review"
+      accessibilityRole="button"
     />
   );
 }
