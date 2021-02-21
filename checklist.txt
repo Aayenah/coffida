@@ -6,13 +6,13 @@
 [X] Filter cafe list by high quality rating
 [X] Filter cafe list by high price rating
 [X] Favourite/Unfavourite cafe from cafe screen
-[ ] Filter cafe list by nearby cafes
-[ ] Setup geolocation
-  [ ] Ask user for permissions
-  [ ] Define what to happen if permission denied
-  [ ] Calculate distance from current location to cafe location
-  [ ] Display distance in miles for each cafe card 
-  [ ] Save current coords in storage
+[X] Filter cafe list by nearby cafes
+[X] Setup geolocation
+  [X] Ask user for permissions
+  [X] Define what to happen if permission denied
+  [X] Calculate distance from current location to cafe location
+  [X] Display distance in miles for each cafe card 
+  [X] Save current coords in storage
 [X] Setup search screen
   [X] Search for cafes by name
   [X] Filter cafes by ratings
@@ -34,7 +34,7 @@
   [X] Allow user to logout
 [X] Setup cafe screen
   [X] Display cafe information
-  [ ] Allow user to add cafe to favourites
+  [X] Allow user to add cafe to favourites
   [X] Show overall and aspect ratings
   [X] Add button to show all reviews
 [X] Setup review screen
@@ -55,8 +55,9 @@
       [X] View review photo
       [X] Delete own photo
 [ ] Finalization
-  [ ] Add error alerts for user
-  [ ] Add comments to code
+  [X] Add error alerts for user
+  [X] Update README.md
+  [ ] Record screencast
 
 
 
