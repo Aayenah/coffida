@@ -93,6 +93,7 @@ export default function RegisterModal() {
           <Icon name="lock" type="font-awesome-5" color="#424242" solid />
         }
         onChangeText={(value) => setPassword(value)}
+        secureTextEntry
       />
       <Button
         title="Register"

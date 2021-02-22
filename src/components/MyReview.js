@@ -89,7 +89,6 @@ export default function MyReview({ cafe, review, returnScreen }) {
       <Card containerStyle={styles.card}>
         <View style={styles.user_row}>
           <Text style={styles.cafe_name}>{cafe.location_name}</Text>
-          <Text style={styles.cafe_name}>{review.review_id}</Text>
           {isOwned && (
             <View style={styles.controls}>
               <AddPhotoButton openCameraView={onOpenCamera} />

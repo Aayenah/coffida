@@ -10,11 +10,12 @@ A mobile app for finding and reviewing cafes, developed using React Native. The 
 - Add cafe to favourites
 - Add/edit/delete owned reviews
 - Like/unlike a review
-- Add photo to owned reviews
+- Use camera to take picture and add to review
+- View/delete review photo
+- View cafe on map
 - Search by name, ratings, group (e.g. favourites)
 - Authentication flow
 - Update user profile
-- Change password
 
 ## Style Guide
 

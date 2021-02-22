@@ -49,6 +49,13 @@ export default function HomeScreen() {
 
   const nearbyCafes = cafes.filter((c) => c.distance < MIN_DISTANCE);
 
+  const sortedNearbyCafes = nearbyCafes.sort((a, b) => {
+    //* sort by distance descending
+    if (a.distance < b.distance) return -1;
+    if (a.distance > b.distance) return 1;
+    return 0;
+  });
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -60,8 +67,8 @@ export default function HomeScreen() {
           {/* <Carousel title="All Cafes" items={cafes} parentFocused={isFocused} /> */}
           {nearbyCafes.length > 0 && (
             <Carousel
-              title="Nearby"
-              items={nearbyCafes}
+              title="Nearest Cafes"
+              items={sortedNearbyCafes}
               parentFocused={isFocused}
             />
           )}

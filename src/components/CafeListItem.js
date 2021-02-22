@@ -8,6 +8,7 @@ import * as RootNavigation from '../utility/RootNavigation';
 import AverageStars from './AverageStars';
 import AspectRating from './AspectRating';
 import FavouritesButton from './FavouritesButton';
+import Distance from './Distance';
 import { addToFavourites, removeFromFavourites } from '../utility/CafeHelpers';
 import { getUserIdFromStorage, getUserInfo } from '../utility/Authentication';
 
@@ -74,8 +75,13 @@ export default function CafeListItem({ cafe }) {
           <ListItem.Title style={styles.cafe_name}>
             {cafe.location_name}
           </ListItem.Title>
-          <Text> - </Text>
-          <Text style={styles.town}>{cafe.location_town}</Text>
+          {/* <Text style={styles.town}>{cafe.location_town}</Text> */}
+          {cafe.distance && (
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={{ marginHorizontal: 10 }}>-</Text>
+              <Distance miles={cafe.distance} />
+            </View>
+          )}
           <View style={styles.fav_container}>
             <FavouritesButton isFav={isFav} onFav={onFav} size={12} />
           </View>

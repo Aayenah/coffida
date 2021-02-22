@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable import/named */
 import React, { useEffect, useState } from 'react';
 import {
@@ -9,6 +11,7 @@ import {
 } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { searchCafes } from '../utility/SearchHelpers';
+import { getDistanceInMiles } from '../utility/GeolocationHelpers';
 import colors from '../config/colors';
 import CafeListItem from '../components/CafeListItem';
 import FilterButton from '../components/FilterButton';
@@ -36,8 +39,18 @@ export default function SearchScreen() {
       searchIn,
     };
 
-    const data = await searchCafes(queryObj);
-    setCafeList(data);
+    const list = await searchCafes(queryObj);
+
+    for (const c of list) {
+      const cafeCoords = {
+        latitude: c.latitude,
+        longitude: c.longitude,
+      };
+      c.distance = await getDistanceInMiles(cafeCoords);
+      console.log(`cafe name: ${c.location_name} - ${c.distance}`);
+    }
+
+    setCafeList(list);
     setSearching(false);
   }
 
@@ -66,8 +79,18 @@ export default function SearchScreen() {
         cleanliness,
         searchIn,
       };
-      const data = await searchCafes(queryObj);
-      setCafeList(data);
+      const list = await searchCafes(queryObj);
+
+      for (const c of list) {
+        const cafeCoords = {
+          latitude: c.latitude,
+          longitude: c.longitude,
+        };
+        c.distance = await getDistanceInMiles(cafeCoords);
+        console.log(`cafe name: ${c.location_name} - ${c.distance}`);
+      }
+
+      setCafeList(list);
       setSearching(false);
     }
     prepareComponent();
@@ -77,14 +100,21 @@ export default function SearchScreen() {
     setOptionsVisible(!optionsVisible);
   }
 
-  const sortedList = cafeList.sort((a, b) => {
-    // sort by location name ascending
-    if (a.location_name < b.location_name) return -1;
-    if (a.location_name > b.location_name) return 1;
+  // const sortedList = cafeList.sort((a, b) => {
+  //   // sort by location name ascending
+  //   if (a.location_name < b.location_name) return -1;
+  //   if (a.location_name > b.location_name) return 1;
+  //   return 0;
+  // });
+
+  const sortedByDistance = cafeList.sort((a, b) => {
+    //* sort by distance descending
+    if (a.distance < b.distance) return -1;
+    if (a.distance > b.distance) return 1;
     return 0;
   });
 
-  let cafeListComponent = sortedList.map((r) => (
+  let cafeListComponent = sortedByDistance.map((r) => (
     <CafeListItem key={r.location_id} cafe={r} />
   ));
 

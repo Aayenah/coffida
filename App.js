@@ -133,7 +133,6 @@ const App = () => {
       if (location !== null) {
         const jsonLocation = JSON.stringify(location);
         await AsyncStorage.setItem('@location', jsonLocation);
-        console.log('location stored: ', location.coords);
       }
     };
 
@@ -185,7 +184,6 @@ const App = () => {
         Geolocation.getCurrentPosition(
           (position) => {
             setLocation(position);
-            console.log('position: ', position);
             // const loc = JSON.stringify(position);
             // await AsyncStorage.setItem('@location', loc);
           },
